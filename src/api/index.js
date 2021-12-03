@@ -1,5 +1,7 @@
 import axios from 'axios';
-
+import Vue from 'vue';
+import { Toast } from 'vant';
+Vue.use(Toast);
 // const axios = axios.create({
 //   baseURL: 'http://120.27.130.230:8080',
 //   // withCredentials: true,
@@ -28,22 +30,20 @@ axios.interceptors.request.use(function(config) {
 });
 
 axios.interceptors.response.use(function(response) {
-  if (response.data && response.data.code) {
-    if (response.data.code == 401) {
-        
+  // console.log(response);
+  if(response.data) {
+    if(response.data.error_code == 400) {
+      Toast.fail(response.data.error_desc);
+      return false;
     }
+    if(response.data.error_code == 404) {
+      Toast.fail(response.data.error_desc);
+      return false;
+    }
+    return response.data
   }
-  if (response.data && response.data.code) {
-      if (response.data.code == 400) {
-          
-      }
-  }
-  // if (response.data && response.data.code) {
-  //   if (parseInt(response.data.code) === 201) {
-  //     Message.error(response.data.message);
-  //   }
-  // }
-  return response
+  
+  
 }, function(error) {
 	// Do something with response error
 	return Promise.reject(error)
@@ -53,15 +53,15 @@ const baseURL = 'http://120.27.130.230:8080';
 
 export default {
   get: function (url, params) {
-    return axios.get(`${baseURL}${url}`, params).then(res => res.data)
+    return axios.get(`${baseURL}${url}`, { params: params }).then(res => res)
   },
   post: function (url, params) {
-    return axios.post(`${baseURL}${url}`, params).then(res => res.data)
+    return axios.post(`${baseURL}${url}`, params).then(res => res)
   },
   put: function (url, params) {
-    return axios.put(`${baseURL}${url}`, params).then(res => res.data)
+    return axios.put(`${baseURL}${url}`, params).then(res => res)
   },
   delete: function (url, params) {
-    return axios.delete(`${baseURL}${url}`, params).then(res => res.data)
+    return axios.delete(`${baseURL}${url}`, params).then(res => res)
   }
 }
