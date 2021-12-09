@@ -1,6 +1,6 @@
 <template>
-    <div>
-      <van-search v-model="value" placeholder="请输入搜索关键词" />
+    <div class="btn">
+      <van-button type="primary" block @click="toAdd">新增指标</van-button>
     </div>
 </template>
 
@@ -9,14 +9,22 @@ export default {
     name: '',
     data() {
       return {
+        value: ''
       };
     },
     created() {
       
     },
-    methods: {}
+    methods: {
+      toAdd() {
+        this.$router.push('form');
+      }
+    }
 }
 
 </script>
 <style lang='less' scoped>
+.btn {
+  padding: 20px;
+}
 </style>

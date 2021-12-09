@@ -1,20 +1,71 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
+import Form from '../views/form/form.vue';
+import AssessIndex from '../views/assess/index.vue';
+import AssessTaskList from '../views/assess/task-list.vue';
+import AssessTaskDetail from '../views/assess/task-detail.vue';
+import IndicatorIndex from '../views/indicator/index.vue';
+import IndicatorList from '../views/indicator/indicator-list.vue';
+import IndicatorDetail from '../views/indicator/indicator-form.vue';
 
 Vue.use(VueRouter)
 
 const routes = [
   {
     path: '/',
-    name: 'Home',
+    name: '',
     component: Home
+  },
+  {
+    path: '/home',
+    name: 'Home',
+    component: () => import('../views/Home.vue')
   },
   {
     path: '/about',
     name: 'About',
     component: () => import('../views/About.vue')
-  }
+  },
+  {
+    path: '/form',
+    name: 'form',
+    component: Form
+  },
+  {
+    path: '/assess',
+    name: 'assess',
+    component: AssessIndex,
+    children: [
+      {
+        path: 'list',
+        name: 'task-list',
+        component: AssessTaskList
+      },
+      {
+        path: 'detail',
+        name: 'task-detail',
+        component: AssessTaskDetail
+      }
+    ]
+  },
+  {
+    path: '/indicator',
+    name: 'indicator',
+    component: IndicatorIndex,
+    children: [
+      {
+        path: 'list',
+        name: 'indicator-list',
+        component: IndicatorList
+      },
+      {
+        path: 'form',
+        name: 'indicator-form',
+        component: IndicatorDetail
+      }
+    ]
+  },
 ]
 
 const router = new VueRouter({

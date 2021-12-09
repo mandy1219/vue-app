@@ -1,29 +1,39 @@
 <template>
   <div class="home">
-    <!-- <img alt="Vue logo" src="../assets/logo.png"> -->
-    <van-button type="primary">主要按钮</van-button>
-    <van-cell-group>
-      <van-cell title="单元格" value="内容" />
-      <van-cell title="单元格" value="内容" label="描述信息" />
-    </van-cell-group>
+    <van-grid :column-num="3">
+      <van-grid-item v-for="item in grid" :key="item.name" icon="photo-o" :text="item.name" @click="toPath(item.path)" />
+    </van-grid>
   </div>
 </template>
 
 <script>
-// @ is an alias to /src
-// import HelloWorld from '@/components/HelloWorld.vue'
-
 export default {
   name: 'Home',
   components: {
     // HelloWorld
   },
-  created() {
-    // this.$api.post('/v1/indicators.list')
-    //   .then(res => {
-    //       console.log(res);
-    //   })
+  data() {
+    return {
+      show: false,
+      grid: [
+        {
+          name: '考核',
+          path: 'assess/list'
+        },
+        {
+          name: '指标管理',
+          path: 'indicator/list'
+        },
+      ]
+    }
   },
+  created() {
+  },
+  methods: {
+    toPath(path) {
+      this.$router.push(path);
+    }
+  }
 }
 </script>
 <style scoped lang="less">
