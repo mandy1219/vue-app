@@ -1,0 +1,31 @@
+module.exports = {
+  indicator: {
+    'indicatorManage': 'indicator manage',
+    'indicatorName': 'indicator name',
+    'indicatorScore': 'indicator score',
+    'indicatorParent': 'parent',
+    'indicatorWeight': 'indicator weight',
+    'indicatorScoreType': 'score way',
+    'indicatorContent': 'indicator content',
+    'indicatorIntroduce': 'indicator introduce',
+    'indicatorAdd': 'add the indicators',
+    'indicatorEdit': 'edit the indicators',
+    'indicatorDetail': 'indicators for details',
+    'weight': 'weight',
+    'score': 'score',
+    'star': 'star',
+  },
+  common: {
+    'add': 'add',
+    'edit': 'edit',
+    'delete': 'delete',
+    'save': 'save',
+    'view': 'view',
+    'detail': 'details',
+    'fillIn': 'fill in ',
+    'select': 'select',
+    'null': 'null',
+    'loading': 'loading',
+    'success': ' success',
+  }
+}
