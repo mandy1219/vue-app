@@ -25,17 +25,43 @@
           :name="index"
           v-for="(list, index) in listData"
           :key="index"
+          @click="stopUrlHref"
         >
           <template #title>
-            <div class="level-1"><van-icon name="cluster-o" color="" />{{ list.title }}</div>
+            <div class="level-1">{{ list.title }}</div>
           </template>
-          
+          <template #value>
+             <van-icon name="weapp-nav" color="#323842" size="20" @click.stop="list.showPop = true" />
+             <van-popover
+                v-model="list.showPop"
+                placement="left"
+                :actions="actions"
+                @select="onSelect($event, list)"
+              >
+              </van-popover>
+          </template>
+
           <div
             class="second-content"
             v-for="(secondItem, secondIndex) in list.childlist"
             :key="secondIndex"
           >
-            <div class="level-2">{{ secondItem.title }}</div>
+            <div class="level-2 flex flex-center">
+              <span>{{ secondItem.title }}</span>
+              <div class="flex">
+                <van-popover
+                  v-model="secondItem.showPop"
+                  trigger="click"
+                  placement="left"
+                  :actions="actions"
+                  @select="onSelect($event, secondItem)"
+                >
+                  <template #reference>
+                      <van-icon name="weapp-nav" />
+                  </template>
+                </van-popover>
+              </div>
+            </div>
             <div
                 class="third"
                 v-for="(thirdItem, thirdIndex) in secondItem.childlist"
@@ -45,7 +71,7 @@
                   <p class="level-3 ellipsis">{{ thirdItem.title }}</p>
                   <div class="flex">
                     <van-popover
-                      v-model="thirdItem.showPopover"
+                      v-model="thirdItem.showPop"
                       trigger="click"
                       placement="left"
                       :actions="actions"
@@ -96,7 +122,7 @@ export default {
            { text: this.$t('common.edit'), icon: 'edit', type: 'edit' },
            { text: this.$t('common.delete'), icon: 'delete-o', type: 'delete' }
         ],
-        showPopover: false,
+        // showPopover: false,
         loading: true
       };
     },
@@ -124,15 +150,15 @@ export default {
             this.listData.forEach((list, index) => {
               this.firstActions.push(index);
               // console.log(this.firstActions);
-              if(list.childlist && list.childlist.length) {
-                list.childlist.forEach((secondList, secondIndex) => {
-                  if(secondList.childlist && secondList.childlist.length) {
-                    secondList.childlist.forEach((thirdItem, thirdIndex) => {
-                      thirdItem.showPop = false;
-                    })
-                  }
-                })
-              }
+              // if(list.childlist && list.childlist.length) {
+              //   list.childlist.forEach((secondList, secondIndex) => {
+              //     if(secondList.childlist && secondList.childlist.length) {
+              //       secondList.childlist.forEach((thirdItem, thirdIndex) => {
+              //         thirdItem.showPop = false;
+              //       })
+              //     }
+              //   })
+              // }
             })
             console.log(this.listData);
           }
@@ -144,14 +170,49 @@ export default {
             this.$router.push({ path: '/indicator/form?id='+item.id});
             break;
           case 'delete':
+            console.log(item);
+            this.$dialog.confirm({
+              title: '',
+              message: '删除父级指标则子级指标也会被删除，是否继续操作？',
+              beforeClose: (action, done) => {
+                if (action === 'confirm') {
+                  this.$api.get('/v1/indicators.delete', {
+                    id: item.id
+                  }).then(res => {
+                    if(res.error_code == '0') {
+                      this.$toast.success('删除成功');
+                      this.getList();
+                      done();
+                    }
+                  })
+                } else {
+                  done();
+                }
+              }
+            })
             break;
           default:
             this.$router.push({ path: '/indicator/form', query: { id: item.id,  disabled: true }});
             break;
         }
       },
+      beforeClose(action, done) {
+        if (action === 'confirm') {
+          setTimeout(done, 1000);
+        } else {
+          done();
+        }
+      },
       edit() {
         
+      },
+      stopUrlHref(e) {
+        e = e || window.event;
+        if (e.stopPropagation) { //W3C阻止冒泡方法
+            e.stopPropagation();
+        } else {
+            e.cancelBubble = true; //IE阻止冒泡方法
+        }
       }
     }
 }
@@ -160,10 +221,21 @@ export default {
 <style lang='less' scoped>
 /deep/ .list {
 
+  .van-cell {
+
+  }
+
   .van-collapse-item {
     margin-bottom: 30px;
+    background: #fff;
+
+    .van-icon-arrow {
+      position: absolute;
+      left: 0;
+    }
   }
   .level-1 {
+    padding-left: 20px;
     font-size: 30px;
     font-weight: bold;
     color: #323842;
@@ -174,21 +246,26 @@ export default {
     }
   }
   .level-2 {
-    padding: 20px 30px;
-    // font-weight: bold;
-    color: #323842;
-    background: #f2f2f2;
+    padding: 20px 40px 20px 30px;
+    font-weight: bold;
+    color: #5a5e64;
+    border-bottom: 2px solid #f5f5f5;
+    // background: #f5f5f5;
   }
   .van-collapse-item__content {
     padding: 0 !important;
 
   }
   .second-content {
-    // padding: 0 40px;
+    border-bottom: 2px solid #f5f5f5;
+    // padding: 0 30px;
   }
   .third {
-    padding: 20px 50px;
+    margin: 20px 20px;
+    padding: 10px 20px;
     color: #5E636E;
+    background: #f7f7f7;
+    border-radius: 20px;
     border-bottom: 2px solid #f0f0f0;
   }
   .content {
