@@ -25,7 +25,6 @@
           :name="index"
           v-for="(list, index) in listData"
           :key="index"
-          @click="stopUrlHref"
         >
           <template #title>
             <div class="level-1">{{ list.title }}</div>
@@ -206,14 +205,6 @@ export default {
       edit() {
         
       },
-      stopUrlHref(e) {
-        e = e || window.event;
-        if (e.stopPropagation) { //W3C阻止冒泡方法
-            e.stopPropagation();
-        } else {
-            e.cancelBubble = true; //IE阻止冒泡方法
-        }
-      }
     }
 }
 
