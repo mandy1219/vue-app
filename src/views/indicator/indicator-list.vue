@@ -45,7 +45,7 @@
             v-for="(secondItem, secondIndex) in list.childlist"
             :key="secondIndex"
           >
-            <div class="level-2 flex flex-center">
+            <div class="level-2 flex flex-center" @click.stop="onSelect($event, secondItem)">
               <span>{{ secondItem.title }}</span>
               <div class="flex">
                 <van-popover
@@ -65,6 +65,7 @@
                 class="third"
                 v-for="(thirdItem, thirdIndex) in secondItem.childlist"
                 :key="thirdIndex"
+                @click.stop="onSelect($event, thirdItem)"
               >
                 <div class="flex flex-center">
                   <p class="level-3 ellipsis">{{ thirdItem.title }}</p>
@@ -148,18 +149,8 @@ export default {
             localStorage.setItem('indicatorsTree', JSON.stringify(_.cloneDeep(res.list)));
             this.listData.forEach((list, index) => {
               this.firstActions.push(index);
-              // console.log(this.firstActions);
-              // if(list.childlist && list.childlist.length) {
-              //   list.childlist.forEach((secondList, secondIndex) => {
-              //     if(secondList.childlist && secondList.childlist.length) {
-              //       secondList.childlist.forEach((thirdItem, thirdIndex) => {
-              //         thirdItem.showPop = false;
-              //       })
-              //     }
-              //   })
-              // }
             })
-            console.log(this.listData);
+            // console.log(this.listData);
           }
         })
       },

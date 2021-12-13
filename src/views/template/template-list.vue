@@ -15,7 +15,7 @@
           </template>
       </van-nav-bar>
       <div class="card-list">
-        <div class="card" v-for="(item) in listData" :key="item.id" @click="toDetail(item)">
+        <div class="card" v-for="(item) in listData" :key="item.id" @click="edit($event, item)">
             <div class="card-info">
                 <div class="flex flex-center">
                     <p class="title ellipsis">{{ item.title }}</p>

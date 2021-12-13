@@ -3,7 +3,9 @@
       <van-nav-bar
           :title="templateId ? disabled ? $t('template.templateDetail') : $t('template.templateEdit') : $t('template.templateAdd')"
           left-arrow
+          :right-text="disabled ? $t('common.edit') : ''"
           @click-left="$back"
+          @click-right="edit"
           :safe-area-inset-top="true"
           :placeholder="true"
           :fixed="true"
@@ -483,6 +485,9 @@ export default {
       showTips(field) {
         this.$toast(field.tip);
       },
+      edit() {
+        this.disabled = false;
+      }
     }
 }
 

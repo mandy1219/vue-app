@@ -3,7 +3,9 @@
         <van-nav-bar
             :title="parentId ? disabled ? $t('indicator.indicatorDetail') : $t('indicator.indicatorEdit') : $t('indicator.indicatorAdd')"
             left-arrow
+            :right-text="disabled ? $t('common.edit') : ''"
             @click-left="$back"
+             @click-right="edit"
             :safe-area-inset-top="true"
             :placeholder="true"
             :fixed="true"
@@ -153,7 +155,7 @@
                 />
             </van-popup> -->
 
-            <div style="margin: 50px 20px" v-if="!disabled">
+            <div style="margin: 30px 20px" v-if="!disabled">
                 <van-button round block type="info" native-type="submit" :loading="saving" :loading-text="$t('common.loading')">{{ parentId ? $t('common.save') : $t('common.add') }}</van-button>
             </div>
         </van-form>
@@ -235,7 +237,7 @@ export default {
         // console.log(this.$route);
         console.log(this.language);
         this.parentId = this.$route.query.id;
-        this.disabled = this.$route.query.disabled;
+        this.disabled = this.$route.query.disabled ? true : false;
         const tree = _.cloneDeep(this.indicatorsTree);
         const list = tree && tree.length ? tree : [];
         // console.log(tree);
@@ -252,7 +254,7 @@ export default {
             }
         });
         this.collection = this.collection.concat(tree);
-        console.log(this.collection);
+        // console.log(this.collection);
 
         if(this.parentId) {
             this.$api.get('/v1/indicators.detail', {
@@ -353,6 +355,9 @@ export default {
                 max: 0
             };
             this.form.level_config.push(obj);
+        },
+        edit() {
+            this.disabled = false;
         }
     }
 }
