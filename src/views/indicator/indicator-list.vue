@@ -30,7 +30,7 @@
             <div class="level-1">{{ list.title }}</div>
           </template>
           <template #value>
-             <van-icon name="weapp-nav" color="#323842" size="20" @click.stop="list.showPop = true" />
+             <van-icon name="ellipsis" color="#323842" size="24" @click.stop="list.showPop = true" />
              <van-popover
                 v-model="list.showPop"
                 placement="left"
@@ -56,7 +56,7 @@
                   @select="onSelect($event, secondItem)"
                 >
                   <template #reference>
-                      <van-icon name="weapp-nav" />
+                      <van-icon name="ellipsis" size="22" />
                   </template>
                 </van-popover>
               </div>
@@ -77,7 +77,7 @@
                       @select="onSelect($event, thirdItem)"
                     >
                       <template #reference>
-                         <van-icon name="weapp-nav" />
+                         <van-icon name="ellipsis" size="18" />
                       </template>
                     </van-popover>
                   </div>

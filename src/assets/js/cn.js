@@ -14,6 +14,7 @@ module.exports = {
       'weight': '权重',
       'score': '分数',
       'star': '打星',
+      'level': '配置等级'
     },
     template: {
       'templateManage': '模板管理',
@@ -38,6 +39,7 @@ module.exports = {
       'select': '请选择',
       'null': '无',
       'loading': '加载中',
-      'success': '成功'
+      'success': '成功',
+      'addValue': '添加值'
     }
 }

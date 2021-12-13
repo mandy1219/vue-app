@@ -263,7 +263,7 @@
                   <div class="flex flex-center">
                     <span>值</span>
                     <div class="flex flex-center"  @click="addValue">
-                      <van-icon name="plus" />添加值
+                      <van-icon name="plus" />{{ $t('common.addValue') }}
                     </div>
                   </div>
                 </template>

@@ -9,7 +9,7 @@
             :fixed="true"
          >
             <template #left>
-               <van-icon name="arrow-left" size="22" color="#060C19" />
+                <van-icon name="arrow-left" size="22" color="#060C19" />
             </template>
         </van-nav-bar>
         <van-form @submit="onSubmit" class="form" v-if="!loading">
@@ -21,6 +21,7 @@
                 :rules="[{ required: true, message: $t('common.fillIn')+$t('indicator.indicatorName') }]"
                 :readonly="disabled"
             />
+
             <van-field
                 v-model="form.score"
                 type="score"
@@ -30,6 +31,40 @@
                 :rules="[{ required: true, message: $t('common.fillIn')+$t('indicator.indicatorScore') }]"
                 :readonly="disabled"
             />
+
+            <van-field name="配置等级" :label="$t('indicator.level')" class="chose-value">
+                <template #label>
+                  <div class="flex flex-center">
+                    <span>{{ $t('indicator.level') }}</span>
+                    
+                    <div class="flex flex-center"  @click="addValue" v-if="form.is_level && !disabled">
+                      <van-icon name="plus" />{{ $t('common.addValue') }}
+                    </div>
+                  </div>
+                </template>
+                <template #input>
+                    <div class="flex mb20">
+                        <van-switch v-model="form.is_level" size="20" @change="changeLevel" :disabled="disabled" />
+                    </div>
+                    <template v-if="form.is_level">
+                        <div class="flex flex-center step-input" v-for="(step, index) in form.level_config" :key="index">
+                            <div class="flex-1 flex flex-center">
+                                <span>等级</span>
+                                <input type="text" v-model="step.level" placeholder="等级" class="van-field__control"  />
+                            </div>
+                            <div class="flex-2 flex step-field">
+                                <span>范围</span>
+                                <input type="number" v-model="step.min" placeholder="范围" class="van-field__control"  />
+                                <i>~</i>
+                                <input type="number" v-model="step.max" placeholder="范围" class="van-field__control"  />
+                                <!-- <van-stepper integer v-model="step.min" /> -->
+                                <!-- <van-stepper integer v-model="step.max" :min="step.min" /> -->
+                            </div>
+                            <van-icon name="clear" size="20" @click="removeValue(step, index)" class="ml20" v-if="!disabled" />
+                        </div>
+                    </template>
+                </template>
+            </van-field>
             <van-field
                 readonly
                 clickable
@@ -52,7 +87,7 @@
                     active-color="#477CFF"
                 />
             </van-popup>
-            <van-field
+            <!-- <van-field
                 readonly
                 clickable
                 :value="form.weight"
@@ -67,14 +102,15 @@
                 :show="show"
                 :maxlength="6"
                 @blur="show = false"
-            />
-            <van-field name="radio" :label="$t('indicator.indicatorScoreType')" :readonly="disabled">
+            /> -->
+
+            <!-- <van-field name="radio" :label="$t('indicator.indicatorScoreType')" :readonly="disabled">
                 <template #input>
                     <van-radio-group v-model="form.score_type" direction="horizontal" :disabled="disabled">
                         <van-radio v-for="item in scoreType" :key="item.value" :name="item.value">{{ item.text }}</van-radio>
                     </van-radio-group>
                 </template>
-            </van-field>
+            </van-field> -->
 
             <van-field
                 v-model="form.content"
@@ -125,6 +161,28 @@
 </template>
 
 <script>
+const level = [
+    {
+        'level': 'A',
+        'min': 90,
+        'max': 100
+    },
+    {
+        'level': 'B',
+        'min': 80,
+        'max': 90
+    },
+    {
+        'level': 'C',
+        'min': 60,
+        'max': 79
+    },
+    {
+        'level': 'D',
+        'min': 0,
+        'max': 59
+    }
+];
 import _ from 'lodash';
 import { mapState, mapGetters } from 'vuex';
 export default {
@@ -145,12 +203,14 @@ export default {
                     value: '0'  
                 }
             ],
+            switchValue: false,
             form: {
                 title: '',
                 score: '',
+                is_level: false,
+                level_config: [],
                 parent: this.$t('common.null'),
                 parent_id: '0',
-                weight: '',
                 score_type: 1,
                 content: '',
                 introduce: ''
@@ -200,7 +260,8 @@ export default {
             }).then(res => {
                 if(res.error_code == '0') {
                     let data = _.cloneDeep(res.data);
-                    data.weight = String(data.weight);
+                    // data.weight = String(data.weight);
+                    data.is_level = data.is_level == 1 ? true : false;
                     if(data.parents) {
                         if(data.parents.parents) {
                             data.parent = `${data.parents.parents.title}/${data.parents.title}`;
@@ -223,6 +284,8 @@ export default {
     methods: {
         onSubmit() {
             console.log(this.form);
+            let form = _.cloneDeep(this.form);
+            form.is_level = form.is_level ? 1 : 0;
             this.saving = true;
             let url = '';
             if(this.parentId) {
@@ -268,6 +331,28 @@ export default {
                 return false;
             }
             this.show = true;
+        },
+        changeLevel(event) {
+            if(event) {
+                this.form.level_config = level;
+            } else {
+                this.form.level_config = [];
+            }
+        },
+        removeValue(option, index) {
+            if(index == 0) {
+                this.$toast('至少配置一个等级！');
+                return;
+            }
+            this.form.level_config.splice(index, 1);
+        },
+        addValue() {
+            let obj = {
+                level: '',
+                min: 0,
+                max: 0
+            };
+            this.form.level_config.push(obj);
         }
     }
 }
@@ -342,6 +427,29 @@ export default {
     }
     .add {
         color: #477CFF;
+    }
+    .chose-value {
+        .van-field__control {
+        flex-direction: column;
+        .flex {
+            width: 100%;
+        }
+        }
+    }
+    .step-input {
+        margin-bottom: 20px;
+        .van-field__control {
+            width: 140px;
+        }
+        .van-stepper__input {
+            padding: 0 !important;
+            width: 80px;
+        }
+        .step-field {
+            padding-left: 20px;
+            align-items: center;
+            justify-content: space-around;
+        }
     }
 }
 .pop-content {

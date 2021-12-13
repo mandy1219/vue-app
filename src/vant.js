@@ -35,7 +35,9 @@ import {
     SubmitBar,
     Collapse,
     CollapseItem,
-    Loading
+    Loading,
+    Switch,
+    Stepper
 } from 'vant';
 
 const components = [
@@ -73,7 +75,9 @@ const components = [
     SubmitBar,
     Collapse,
     CollapseItem,
-    Loading
+    Loading,
+    Switch,
+    Stepper
 ];
 
 components.forEach(component => {
