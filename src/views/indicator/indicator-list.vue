@@ -87,12 +87,12 @@
                   <span class="mr20">
                     <van-icon name="flag-o" size="15" />{{ $t('indicator.score') }}<i class="text">{{ thirdItem.score }}</i>
                   </span>
-                  <span class="mr20">
+                  <!-- <span class="mr20">
                     <van-icon name="points" size="15" />{{ $t('indicator.weight') }}<i class="text">{{ thirdItem.weight }}</i>
                   </span>
                   <span>
                     <van-icon name="sign" size="15" />{{ $t('indicator.indicatorScoreType') }}<i class="text">{{ thirdItem.score_type }}</i>
-                  </span>
+                  </span> -->
                 </div>
                 <!-- <div class="content">
                   <span>
