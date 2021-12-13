@@ -24,6 +24,10 @@ export default {
           name: '指标管理',
           path: 'indicator/list'
         },
+        {
+          name: '评价管理',
+          path: 'template/list'
+        },
       ]
     }
   },

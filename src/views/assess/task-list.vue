@@ -87,7 +87,7 @@ export default {
 }
 
 </script>
-<style lang='less' scoped>
+<style lang='less'>
 .card-list {
     padding: 20px 0;
     .card {

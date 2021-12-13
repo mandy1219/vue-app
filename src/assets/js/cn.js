@@ -15,6 +15,18 @@ module.exports = {
       'score': '分数',
       'star': '打星',
     },
+    template: {
+      'templateManage': '模板管理',
+      'templateAdd': '新增模板',
+      'templateEdit': '编辑模板',
+      'templateName': '模板名称',
+      'templateDetail': '模板详情',
+      'templateTitle': '标题',
+      'templateType': '类型',
+      'templateScore': '分数',
+      'templateValue': '值',
+      'templateRequired': '是否必填'
+    },
     common: {
       'add': '新增',
       'edit': '编辑',
@@ -26,5 +38,6 @@ module.exports = {
       'select': '请选择',
       'null': '无',
       'loading': '加载中',
+      'success': '成功'
     }
 }

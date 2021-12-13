@@ -7,7 +7,11 @@ import AssessTaskList from '../views/assess/task-list.vue';
 import AssessTaskDetail from '../views/assess/task-detail.vue';
 import IndicatorIndex from '../views/indicator/index.vue';
 import IndicatorList from '../views/indicator/indicator-list.vue';
-import IndicatorDetail from '../views/indicator/indicator-form.vue';
+import IndicatorForm from '../views/indicator/indicator-form.vue';
+
+import TemplateIndex from '../views/template/index.vue';
+import TemplateList from '../views/template/template-list.vue';
+import TemplateForm from '../views/template/template-form.vue';
 
 Vue.use(VueRouter)
 
@@ -62,7 +66,24 @@ const routes = [
       {
         path: 'form',
         name: 'indicator-form',
-        component: IndicatorDetail
+        component: IndicatorForm
+      }
+    ]
+  },
+  {
+    path: '/template',
+    name: 'template',
+    component: TemplateIndex,
+    children: [
+      {
+        path: 'list',
+        name: 'template-list',
+        component: TemplateList
+      },
+      {
+        path: 'form',
+        name: 'template-form',
+        component: TemplateForm
       }
     ]
   },

@@ -29,7 +29,7 @@ const language = getUrlKey('language'); // 语言
 store.commit('setLanguage', language);
 
 const i18n = new VueI18n({
-    locale: store.state.language  == 'cn' ? 'zh-CN' : 'en-US',    // 语言标识
+    locale: store.state.language  == 'en' ? 'en-US' : 'zh-CN',    // 语言标识
     // locale: 'en-US',    // 语言标识
     //this.$i18n.locale // 通过切换locale的值来实现语言切换
     messages: {
