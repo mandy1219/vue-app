@@ -19,3 +19,4 @@ selenium-debug.log
 package-lock.json
 .env.production.local
 /node_modules/
+/dist.zip
