@@ -392,31 +392,31 @@ export default {
         ],
         columns: [
           {
-            text: '文本',
+            text: this.$t('common.text'),
             value: 'text'
           },
           {
-            text: '单选',
+            text: this.$t('common.radio'),
             value: 'radio'
           },
           {
-            text: '多选',
+            text: this.$t('common.checkbox'),
             value: 'checkbox'
           },
           {
-            text: '下拉框',
+            text: this.$t('common.select'),
             value: 'select'
           },
 					{
-            text: '文本域',
+            text: this.$t('common.editor'),
             value: 'editor'
           },
           {
-            text: '文件',
+            text: this.$t('common.file'),
             value: 'file'
           },
           {
-            text: '图片',
+            text: this.$t('common.img'),
             value: 'img'
           }
         ],
@@ -523,7 +523,7 @@ export default {
       },
       removeValue(option, index) {
         if(index == 0) {
-          this.$toast('至少有一个值！');
+          this.$toast(this.$t('template.validationValue'));
           return;
         }
         this.elementForm.options.splice(index, 1);

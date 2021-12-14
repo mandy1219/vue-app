@@ -1,7 +1,7 @@
 <template>
     <div>
       <van-nav-bar
-          :title="$t('indicator.indicatorManage')"
+          title="全国指标"
           left-arrow
           :right-text="$t('common.add')"
           @click-left="$back"
@@ -14,9 +14,9 @@
               <van-icon name="arrow-left" size="22" color="#060C19" />
           </template>
       </van-nav-bar>
-      <!-- <div class="p20">
-        <van-button type="primary" @click="add">添加指标</van-button>
-      </div> -->
+      <van-tabs v-model="tabActive" @click="onClick" color="#477CFF">
+          <van-tab :title="item.text" v-for="(item) in area" :key="item.value"></van-tab>
+      </van-tabs>
 
       <van-loading v-if="loading" />
 
@@ -117,9 +117,28 @@ export default {
         per_page: 20,
         listData: [],
         actions: [
-           { text: this.$t('common.view'), icon: 'orders-o', type: 'detail' }, 
-           { text: this.$t('common.edit'), icon: 'edit', type: 'edit' },
-           { text: this.$t('common.delete'), icon: 'delete-o', type: 'delete' }
+					{ text: this.$t('common.view'), icon: 'orders-o', type: 'detail' }, 
+					{ text: this.$t('common.edit'), icon: 'edit', type: 'edit' },
+					{ text: this.$t('common.delete'), icon: 'delete-o', type: 'delete' }
+        ],
+				tabActive: 0,
+        area: [
+					{
+						text: '北京',
+						value: '1'
+					},
+					{
+						text: '上海',
+						value: '2'
+					},
+					{
+						text: '广州',
+						value: '3'
+					},
+					{
+						text: '深圳',
+						value: '4'
+					},
         ],
         // showPopover: false,
         loading: true
@@ -129,6 +148,7 @@ export default {
       this.getList();
     },
     methods: {
+			onClick() {},
       add() {
         this.$router.push('/indicator/form');
       },
@@ -201,7 +221,7 @@ export default {
 </script>
 <style lang='less' scoped>
 /deep/ .list {
-  margin-top: 30px;
+	margin-top: 30px;
   .van-cell {
 
   }

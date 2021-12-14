@@ -22,7 +22,7 @@ export default {
         },
         {
           name: '指标管理',
-          path: 'indicator/list'
+          path: 'indicator/router'
         },
         {
           name: '评价管理',

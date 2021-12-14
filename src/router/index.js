@@ -6,7 +6,9 @@ import AssessIndex from '../views/assess/index.vue';
 import AssessTaskList from '../views/assess/task-list.vue';
 import AssessTaskDetail from '../views/assess/task-detail.vue';
 import IndicatorIndex from '../views/indicator/index.vue';
+import IndicatorRouter from '../views/indicator/indicator-router.vue';
 import IndicatorList from '../views/indicator/indicator-list.vue';
+import IndicatorQuery from '../views/indicator/indicator-query.vue';
 import IndicatorForm from '../views/indicator/indicator-form.vue';
 
 import TemplateIndex from '../views/template/index.vue';
@@ -59,9 +61,19 @@ const routes = [
     component: IndicatorIndex,
     children: [
       {
+        path: 'router',
+        name: 'indicator-router',
+        component: IndicatorRouter
+      },
+      {
         path: 'list',
         name: 'indicator-list',
         component: IndicatorList
+      },
+      {
+        path: 'query',
+        name: 'indicator-query',
+        component: IndicatorQuery
       },
       {
         path: 'form',

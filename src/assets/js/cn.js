@@ -31,7 +31,15 @@ module.exports = {
       'deleteConfirm': '删除后已录入的信息无法恢复，确认要继续吗？',
       'uploadFile': '上传文件',
       'tip': '提示语',
-      'isRequired': '是否必填'
+      'isRequired': '是否必填',
+      'text': '文本',
+      'radio': '单选',
+      'checkbox': '多选',
+      'select': '下拉框',
+      'editor': '文本域',
+      'file': '文件',
+      'img': '图片',
+      'validationValue': '至少有一个值'
     },
     common: {
       'confirm': '确定',
