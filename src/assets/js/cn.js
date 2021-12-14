@@ -26,9 +26,15 @@ module.exports = {
       'templateType': '类型',
       'templateScore': '分数',
       'templateValue': '值',
-      'templateRequired': '是否必填'
+      'templateRequired': '是否必填',
+      'addElement': '增加元素',
+      'deleteConfirm': '删除后已录入的信息无法恢复，确认要继续吗？',
+      'uploadFile': '上传文件',
+      'tip': '提示语',
+      'isRequired': '是否必填'
     },
     common: {
+      'confirm': '确定',
       'add': '新增',
       'edit': '编辑',
       'delete': '删除',
@@ -40,6 +46,8 @@ module.exports = {
       'null': '无',
       'loading': '加载中',
       'success': '成功',
-      'addValue': '添加值'
+      'addValue': '添加值',
+      'is': '是',
+      'no': '否',
     }
 }

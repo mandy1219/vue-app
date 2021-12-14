@@ -26,7 +26,7 @@
           />
 
           <div class="add-element center" v-if="!disabled">
-            <span @click="addElement"><van-icon name="plus" />增加元素</span>
+            <span @click="addElement"><van-icon name="plus" />{{ $t('template.addElement') }}</span>
           </div>
 
           <div v-for="(field, index) in templateForm.form" :key="index">
@@ -36,7 +36,7 @@
                 v-model="field.value"
                 :name="field.type"
                 :label="field.label"
-                placeholder="标题"
+                :placeholder="field.label"
               >
                 <template #label>
                   <div class="flex flex-center">
@@ -200,17 +200,63 @@
                 </template>
               </van-field>
             </template>
+
 						<template v-if="field.type == 'file'">
 							<van-field :name="field.type" :label="field.label">
+                <template #label>
+                  <div class="flex flex-center">
+                    <span class="flex flex-center">
+											<i class="required" v-if="field.is_require == '1'">*</i>
+                      {{ field.label }}
+                      <van-icon v-if="field.tip" name="question" class="ml10" color="#ccc" @click="showTips(field)" />
+                    </span>
+                    <div class="flex" v-if="!disabled">
+                      <van-popover
+                        v-model="field.showPop"
+                        trigger="click"
+                        placement="left"
+                        :actions="actions"
+                        @select="editElement($event, field, index)"
+                      >
+                        <template #reference>
+                          <van-icon name="ellipsis" size="16" color="#323842" />
+                        </template>
+                      </van-popover>
+                    </div>
+                  </div>
+                </template>
 								<template #input>
 									<van-uploader v-model="uploader" :disabled="true">
-										<van-button icon="plus">上传文件</van-button>
+										<van-button icon="plus">{{ $t('template.uploadFile') }}</van-button>
 									</van-uploader>
 								</template>
 							</van-field>
 						</template>
+
 						<template v-if="field.type == 'img'">
 							<van-field :name="field.type" :label="field.label">
+                <template #label>
+                  <div class="flex flex-center">
+                    <span class="flex flex-center">
+											<i class="required" v-if="field.is_require == '1'">*</i>
+                      {{ field.label }}
+                      <van-icon v-if="field.tip" name="question" class="ml10" color="#ccc" @click="showTips(field)" />
+                    </span>
+                    <div class="flex" v-if="!disabled">
+                      <van-popover
+                        v-model="field.showPop"
+                        trigger="click"
+                        placement="left"
+                        :actions="actions"
+                        @select="editElement($event, field, index)"
+                      >
+                        <template #reference>
+                          <van-icon name="ellipsis" size="16" color="#323842" />
+                        </template>
+                      </van-popover>
+                    </div>
+                  </div>
+                </template>
 								<template #input>
 									<van-uploader v-model="uploaderImg" :disabled="true" />
 								</template>
@@ -231,9 +277,9 @@
             <van-field
               v-model="elementForm.label"
               name="标题"
-              label="标题"
-              placeholder="标题"
-              :rules="[{ required: true, message: '请填写标题' }]"
+              :label="$t('template.templateTitle')"
+              :placeholder="$t('template.templateTitle')"
+              :rules="[{ required: true, message: $t('common.fillIn')+$t('template.templateTitle') }]"
             />
 
             <van-field
@@ -258,12 +304,12 @@
             <template v-if="elementForm.type == 'radio' || elementForm.type == 'checkbox' || elementForm.type == 'select'">
               <van-field
                 name="值"
-                placeholder="值"
+                :placeholder="$t('template.templateValue')"
                 class="chose-value"
               >
                 <template #label>
                   <div class="flex flex-center">
-                    <span>值</span>
+                    <span>{{ $t('template.templateValue') }}</span>
                     <div class="flex flex-center"  @click="addValue">
                       <van-icon name="plus" />{{ $t('common.addValue') }}
                     </div>
@@ -271,7 +317,7 @@
                 </template>
                 <template #input>
                   <div v-for="(option, index) in elementForm.options" :key="index" class="flex flex-center mb20">
-                    <input v-model="elementForm.options[index]" type="text" :name="option" placeholder="值" class="van-field__control"  />
+                    <input v-model="elementForm.options[index]" type="text" :name="option" :placeholder="$t('template.templateValue')" class="van-field__control"  />
                     <van-icon name="clear" size="20" @click="removeValue(option, index)" class="ml20" />
                   </div>
                 </template>
@@ -282,29 +328,29 @@
               v-model="elementForm.score"
               name="分数"
               type="number"
-              label="分数"
-              placeholder="分数"
+              :label="$t('template.templateScore')"
+              :placeholder="$t('template.templateScore')"
             />
 
             <van-field
               v-model="elementForm.tip"
               name="提示语"
-              label="提示语"
-              placeholder="提示语"
+              :label="$t('template.tip')"
+              :placeholder="$t('template.tip')"
             />
 
-            <van-field name="radio" label="是否必填">
+            <van-field name="radio" :label="$t('template.isRequired')">
               <template #input>
                 <van-radio-group v-model="elementForm.is_require" direction="horizontal">
-                  <van-radio :name="1">是</van-radio>
-                  <van-radio :name="2">否</van-radio>
+                  <van-radio :name="1">{{ $t('common.is') }}</van-radio>
+                  <van-radio :name="2">{{ $t('common.no') }}</van-radio>
                 </van-radio-group>
               </template>
             </van-field>
 
 
             <div style="margin: 16px;">
-              <van-button round block type="info" native-type="submit">确定</van-button>
+              <van-button round block type="info" native-type="submit">{{ $t('common.confirm') }}</van-button>
             </div>
           </van-form>
         </div>
