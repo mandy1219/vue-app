@@ -28,6 +28,7 @@
             <div class="card-handle flex flex-center">
                 <span class="time">{{ item.updated_at }}</span>
                 <div class="flex">
+                    <van-icon name="ellipsis" size="20" color="#323842" @click.stop="item.showPop = true" />
                     <van-popover
                         v-model="item.showPop"
                         trigger="click"
@@ -35,9 +36,6 @@
                         :actions="actions"
                         @select="edit($event, item)"
                     >
-                    <template #reference>
-                        <van-icon name="ellipsis" size="20" color="#323842" />
-                    </template>
                     </van-popover>
                 </div>
             </div>
