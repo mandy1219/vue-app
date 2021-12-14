@@ -14,7 +14,8 @@ module.exports = {
       'weight': '权重',
       'score': '分数',
       'star': '打星',
-      'level': '配置等级'
+      'level': '配置等级',
+      'deleteConfirm': '删除后已录入的信息无法恢复，确认要继续吗？',
     },
     template: {
       'templateManage': '模板管理',
@@ -26,7 +27,6 @@ module.exports = {
       'templateType': '类型',
       'templateScore': '分数',
       'templateValue': '值',
-      'templateRequired': '是否必填',
       'addElement': '增加元素',
       'deleteConfirm': '删除后已录入的信息无法恢复，确认要继续吗？',
       'uploadFile': '上传文件',

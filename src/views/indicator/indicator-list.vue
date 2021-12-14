@@ -162,14 +162,14 @@ export default {
             console.log(item);
             this.$dialog.confirm({
               title: '',
-              message: '删除父级指标则子级指标也会被删除，是否继续操作？',
+              message: this.$t('indicator.deleteConfirm'),
               beforeClose: (action, done) => {
                 if (action === 'confirm') {
                   this.$api.get('/v1/indicators.delete', {
                     id: item.id
                   }).then(res => {
                     if(res.error_code == '0') {
-                      this.$toast.success('删除成功');
+                      this.$toast.success(this.$t('common.delete')+this.$t('common.success'));
                       this.getList();
                       done();
                     }
