@@ -37,7 +37,8 @@ import {
     CollapseItem,
     Loading,
     Switch,
-    Stepper
+    Stepper,
+    List
 } from 'vant';
 
 const components = [
@@ -77,7 +78,8 @@ const components = [
     CollapseItem,
     Loading,
     Switch,
-    Stepper
+    Stepper,
+    List
 ];
 
 components.forEach(component => {

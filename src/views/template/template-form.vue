@@ -392,31 +392,31 @@ export default {
         ],
         columns: [
           {
-            text: this.$t('common.text'),
+            text: this.$t('template.text'),
             value: 'text'
           },
           {
-            text: this.$t('common.radio'),
+            text: this.$t('template.radio'),
             value: 'radio'
           },
           {
-            text: this.$t('common.checkbox'),
+            text: this.$t('template.checkbox'),
             value: 'checkbox'
           },
           {
-            text: this.$t('common.select'),
+            text: this.$t('template.select'),
             value: 'select'
           },
 					{
-            text: this.$t('common.editor'),
+            text: this.$t('template.editor'),
             value: 'editor'
           },
           {
-            text: this.$t('common.file'),
+            text: this.$t('template.file'),
             value: 'file'
           },
           {
-            text: this.$t('common.img'),
+            text: this.$t('template.img'),
             value: 'img'
           }
         ],
@@ -465,8 +465,13 @@ export default {
           this.saving = false;
         })
         .then(res => {
-          this.$toast.success(this.templateId ? this.$t('common.save')+this.$t('common.success') : this.$t('common.add')+this.$t('common.success'));
-          this.$back();
+          if(res.error_code == '0') {
+            this.$toast.success(this.templateId ? this.$t('common.save')+this.$t('common.success') : this.$t('common.add')+this.$t('common.success'));
+            this.$back();
+          }
+        })
+        .catch(error => {
+          console.log(error);
         })
       },
       onConfirm(option) {

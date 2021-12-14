@@ -13,34 +13,42 @@
           <template #left>
               <van-icon name="arrow-left" size="22" color="#060C19" />
           </template>
-      </van-nav-bar>
-      <div class="card-list">
-        <div class="card" v-for="(item) in listData" :key="item.id" @click="edit($event, item)">
-            <div class="card-info">
-                <div class="flex flex-center">
-                    <p class="title ellipsis">{{ item.title }}</p>
-                    <div class="flex"><van-tag round type="primary">{{ item.indicators_name }}</van-tag></div>
-                </div>
-                <div class="content">
+        </van-nav-bar>
+      <!-- <div class="card-list"> -->
+        <van-list
+            v-model="loading"
+            :finished="finished"
+            finished-text="没有更多了"
+            @load="load"
+            class="card-list"
+        >
+            <div class="card" v-for="(item) in listData" :key="item.id" @click="edit($event, item)">
+                <div class="card-info">
+                    <div class="flex flex-center">
+                        <p class="title ellipsis">{{ item.title }}</p>
+                        <div class="flex"><van-tag round type="primary">{{ item.indicators_name }}</van-tag></div>
+                    </div>
+                    <div class="content">
 
+                    </div>
+                </div>
+                <div class="card-handle flex flex-center">
+                    <span class="time">{{ item.updated_at }}</span>
+                    <div class="flex">
+                        <van-icon name="ellipsis" size="20" color="#323842" @click.stop="item.showPop = true" />
+                        <van-popover
+                            v-model="item.showPop"
+                            trigger="click"
+                            placement="left"
+                            :actions="actions"
+                            @select="edit($event, item)"
+                        >
+                        </van-popover>
+                    </div>
                 </div>
             </div>
-            <div class="card-handle flex flex-center">
-                <span class="time">{{ item.updated_at }}</span>
-                <div class="flex">
-                    <van-icon name="ellipsis" size="20" color="#323842" @click.stop="item.showPop = true" />
-                    <van-popover
-                        v-model="item.showPop"
-                        trigger="click"
-                        placement="left"
-                        :actions="actions"
-                        @select="edit($event, item)"
-                    >
-                    </van-popover>
-                </div>
-            </div>
-        </div>
-    </div>
+        </van-list>
+    <!-- </div> -->
     </div>
 </template>
 
@@ -60,6 +68,9 @@ export default {
                 { text: this.$t('common.edit'), icon: 'edit', type: 'edit' },
                 { text: this.$t('common.delete'), icon: 'delete-o', type: 'delete' }
             ],
+            loading: false,
+            finished: false,
+            total: 0,
       };
     },
     created() {
@@ -72,11 +83,21 @@ export default {
                 page: this.page,
             }
             this.$api.get('/v1/template.list', params)
+
             .then(res => {
                 if(res.error_code == 0) {
-                    this.listData = res.data.list;
+                    this.listData = this.listData.concat(res.data.list);
+                    this.total = res.data.paginate.total;
+                    this.loading = false;
                 }
             })
+        },
+        load(){
+            if (this.listData.length >= this.total) {
+                this.finished = true;
+            }
+            this.page = this.page + 1;
+            this.getList();
         },
         toDetail(item) {},
         add() {
