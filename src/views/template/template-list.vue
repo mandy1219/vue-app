@@ -19,7 +19,7 @@
             v-model="loading"
             :finished="finished"
             finished-text="没有更多了"
-            @load="load"
+            @load="getList"
             class="card-list"
         >
             <div class="card" v-for="(item) in listData" :key="item.id" @click="edit($event, item)">
@@ -74,7 +74,7 @@ export default {
       };
     },
     created() {
-        this.getList();
+        // this.getList();
     },
     methods: {
         getList() {
@@ -82,8 +82,10 @@ export default {
                 per_page: this.per_page,
                 page: this.page,
             }
+            if (this.listData.length >= this.total) {
+                this.finished = true;
+            }
             this.$api.get('/v1/template.list', params)
-
             .then(res => {
                 if(res.error_code == 0) {
                     this.listData = this.listData.concat(res.data.list);
@@ -92,13 +94,13 @@ export default {
                 }
             })
         },
-        load(){
-            if (this.listData.length >= this.total) {
-                this.finished = true;
-            }
-            this.page = this.page + 1;
-            this.getList();
-        },
+        // load(){
+        //     if (this.listData.length >= this.total) {
+        //         this.finished = true;
+        //     }
+        //     this.page = this.page + 1;
+        //     this.getList();
+        // },
         toDetail(item) {},
         add() {
             this.$router.push('/template/form');
@@ -115,17 +117,19 @@ export default {
                     message: this.$t('template.deleteConfirm'),
                     beforeClose: (action, done) => {
                         if (action === 'confirm') {
-                        this.$api.get('/v1/template.delete', {
-                            id: item.id
-                        }).then(res => {
-                            if(res.error_code == '0') {
-                            this.$toast.success(this.$t('common.delete')+this.$t('common.success'));
-                            this.getList();
-                            done();
-                            }
-                        })
+                            this.$api.get('/v1/template.delete', {
+                                id: item.id
+                            }).then(res => {
+                                if(res.error_code == '0') {
+                                    this.$toast.success(this.$t('common.delete')+this.$t('common.success'));
+                                    this.loading = true;
+                                    this.finished = false;
+                                    this.getList();
+                                    done();
+                                }
+                            })
                         } else {
-                        done();
+                            done();
                         }
                     }
                 })

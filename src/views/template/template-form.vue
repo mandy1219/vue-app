@@ -119,7 +119,7 @@
                   </div>
                 </template>
                 <template #input>
-                  <van-checkbox-group v-model="field.value" direction="horizontal" :disabled="disabled">
+                  <van-checkbox-group direction="horizontal" :disabled="disabled">
                      <van-checkbox shape="square" :name="checkBox.key" v-for="checkBox in field.options" :key="checkBox.value">{{ checkBox.value }}</van-checkbox>
                   </van-checkbox-group>
                 </template>
@@ -305,7 +305,9 @@
               <van-field
                 name="值"
                 :placeholder="$t('template.templateValue')"
+                :value="elementForm.options[0]"
                 class="chose-value"
+                :rules="[{ required: true, message: $t('common.fillIn')+$t('template.templateValue') }]"
               >
                 <template #label>
                   <div class="flex flex-center">
@@ -318,7 +320,7 @@
                 <template #input>
                   <div v-for="(option, index) in elementForm.options" :key="index" class="flex flex-center mb20">
                     <input v-model="elementForm.options[index]" type="text" :name="option" :placeholder="$t('template.templateValue')" class="van-field__control"  />
-                    <van-icon name="clear" size="20" @click="removeValue(option, index)" class="ml20" />
+                    <van-icon name="clear" size="20" @click="removeValue(elementForm.options, index)" class="ml20" />
                   </div>
                 </template>
               </van-field>
@@ -382,7 +384,6 @@ export default {
         templateForm: {
           title: '',
           form: []
-
         },
         showPicker: false,
         showComponent: false,
@@ -435,7 +436,8 @@ export default {
       this.fetch();
     },
     methods: {
-       fetch() {
+      // 获取详情
+      fetch() {
         if(this.templateId) {
           this.$api.get('/v1/template.detail', {
             id: this.templateId
@@ -450,7 +452,7 @@ export default {
           this.loading = false;
         }
       },
-      // 新增 编辑模板
+      // 新增 编辑提交模板
       onSubmit() {
         this.saving = true;
         console.log(this.templateForm);
@@ -474,6 +476,7 @@ export default {
           console.log(error);
         })
       },
+      // 下拉选择类型
       onConfirm(option) {
         this.elementForm.type = option.value;
         this.elementForm.value = option.text;
@@ -484,7 +487,7 @@ export default {
         this.elementForm = _.cloneDeep(format);
         this.showComponent = true;
       },
-      // 编辑元素
+      // 列表点击编辑元素
       editElement(event, field, index) {
 				if(event.type == 'edit') {
 					this.elementForm = field;
@@ -502,37 +505,43 @@ export default {
 					this.templateForm.form.splice(index, 1);
 				}
       },
+      // 保存元素
       submitElement() {
         const form = _.cloneDeep(this.elementForm);
         let option = form.options;
         if(option.length) {
           form.options = [];
           option.map((item, index) => {
-            let obj = {};
-            obj.key = 'o' + (index + 1);
-            obj.value = item;
-            form.options.push(obj);
+            if(item) {
+              let obj = {};
+              obj.key = 'o' + (index + 1);
+              obj.value = item;
+              form.options.push(obj);
+            }
           })
         }
         delete form.value;
+        // add or edit
         if(form.id) {
-          this.$set(this.templateForm.form, index, form);
+          this.$set(this.templateForm.form, form.id, form); // edit
         } else {
-          this.templateForm.form.push(form);
+          this.templateForm.form.push(form); // add
         }
         this.showComponent = false;
-        // console.log(this.templateForm);
       },
+      // 添加值 row
       addValue() {
         this.elementForm.options.push('');
       },
-      removeValue(option, index) {
-        if(index == 0) {
+      // 删除值 row
+      removeValue(options, index) {
+        if(options.length <= 1) {
           this.$toast(this.$t('template.validationValue'));
           return;
         }
         this.elementForm.options.splice(index, 1);
       },
+      // 点击问号显示tips
       showTips(field) {
         this.$toast(field.tip);
       },
