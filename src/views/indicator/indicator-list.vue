@@ -42,7 +42,7 @@
 
           <div
             class="second-content"
-            v-for="(secondItem, secondIndex) in list.childlist"
+            v-for="(secondItem, secondIndex) in list.children_list"
             :key="secondIndex"
           >
             <div class="level-2 flex flex-center" @click.stop="onSelect($event, secondItem)">
@@ -64,7 +64,7 @@
             </div>
             <div
                 class="third"
-                v-for="(thirdItem, thirdIndex) in secondItem.childlist"
+                v-for="(thirdItem, thirdIndex) in secondItem.children_list"
                 :key="thirdIndex"
                 @click.stop="onSelect($event, thirdItem)"
               >
@@ -134,10 +134,7 @@ export default {
       },
       getList() {
         this.loading = true;
-        this.$api.get('/v1/indicators.tree', {
-          per_page: this.per_page,
-          page: this.page,
-        })
+        this.$api.get('/v1/indicators.tree')
         .finally(() => {
           this.loading = false;
         })

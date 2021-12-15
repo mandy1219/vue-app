@@ -62,7 +62,7 @@
                                 <!-- <van-stepper integer v-model="step.min" /> -->
                                 <!-- <van-stepper integer v-model="step.max" :min="step.min" /> -->
                             </div>
-                            <van-icon name="clear" size="20" @click="removeValue(step, index)" class="ml20" v-if="!disabled" />
+                            <van-icon name="clear" size="20" @click="removeValue(form.level_config, index)" class="ml20" v-if="!disabled" />
                         </div>
                     </template>
                 </template>
@@ -210,7 +210,7 @@ export default {
                 title: '',
                 score: '',
                 is_level: false,
-                level_config: [],
+                level_config: level,
                 parent: this.$t('common.null'),
                 parent_id: '0',
                 score_type: 1,
@@ -235,7 +235,6 @@ export default {
     },
     created() {
         // console.log(this.$route);
-        console.log(this.language);
         this.parentId = this.$route.query.id;
         this.disabled = this.$route.query.disabled ? true : false;
         const tree = _.cloneDeep(this.indicatorsTree);
@@ -244,12 +243,12 @@ export default {
         list.forEach(first => {
             first.text = first.title;
             first.value = first.id;
-            if(first.childlist) {
-                first.children = first.childlist;
+            if(first.children_list) {
+                first.children = first.children_list;
                 first.children.forEach(second => {
                     second.text = second.title;
                     second.value = second.id;
-                    delete second.childlist;
+                    delete second.children_list;
                 })
             }
         });
@@ -342,7 +341,7 @@ export default {
             }
         },
         removeValue(option, index) {
-            if(index == 0) {
+            if(option.length <= 1) {
                 this.$toast('至少配置一个等级！');
                 return;
             }
