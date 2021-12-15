@@ -14,7 +14,60 @@
                 <van-icon name="arrow-left" size="22" color="#060C19" />
             </template>
         </van-nav-bar>
+
         <van-form @submit="onSubmit" class="form" v-if="!loading">
+            <van-field
+                readonly
+                clickable
+                name="picker"
+                :value="city"
+                label="指标参考"
+                placeholder="指标参考"
+                @click="cityPicker = true"
+                class="filed-picker"
+                right-icon="arrow-down"
+            />
+            <van-popup v-model="cityPicker" position="bottom">
+                <van-picker
+                    show-toolbar
+                    :columns="cities"
+                    value-key="name"
+                    @confirm="changeCity"
+                    @cancel="cityPicker = false"
+                />
+            </van-popup>
+            
+            <van-field class="field-folding" v-if="!isLoadingTree">
+                <template #input>
+                    <van-collapse v-model="treeFirst" :border="false">
+                        <van-collapse-item
+                            v-for="(first, index) in treeData"
+                            :key="index"
+                            :title="first.title"
+                            :name="first.id"
+                        >
+                            <van-collapse v-model="treeSecond" :border="false">
+                                <van-collapse-item
+                                    v-for="(second) in first.children_list"
+                                    :key="second.id"
+                                    :title="second.title"
+                                    :name="second.id"
+                                >
+                                    <van-cell
+                                        v-for="(third) in second.children_list"
+                                        :key="third.id"
+                                    >
+                                        {{ third.title }}
+                                    </van-cell>
+
+                                </van-collapse-item>
+                            </van-collapse>
+                        </van-collapse-item>
+                    </van-collapse>
+                </template>
+            </van-field>
+
+
             <van-field
                 v-model="form.title"
                 name="指标名称"
@@ -159,6 +212,7 @@
                 <van-button round block type="info" native-type="submit" :loading="saving" :loading-text="$t('common.loading')">{{ parentId ? $t('common.save') : $t('common.add') }}</van-button>
             </div>
         </van-form>
+
     </div>
 </template>
 
@@ -215,7 +269,7 @@ export default {
                 parent_id: '0',
                 score_type: 1,
                 content: '',
-                introduce: ''
+                introduce: '',
             },
             scoreType: [
                 {
@@ -231,6 +285,16 @@ export default {
             picker: false,
             cascaderValue: '0',
             columns: ['需要', '不需要'],
+            cityPicker: false,
+            city: '',
+            cities: [],
+            showTree: false,
+            treeData: [],
+            isLoadingTree: true,
+            activeNames: ['1'],
+            treeFirst: [],
+            treeSecond: [],
+            treeThird: []
         };
     },
     created() {
@@ -281,8 +345,38 @@ export default {
         } else {
             this.loading = false;
         }
+        this.getCityList();
+        
     },
     methods: {
+        changeCity(option) {
+            this.city = option.name;
+            this.cityPicker = false;
+            this.getCityData();
+        },
+        getCityList() {
+            this.$api.get('/v1/city.list')
+            .then(res => {
+                if(res && res.length) {
+                    this.cities = res;
+                    this.city = res[0].name;
+                    this.getCityData();
+                }
+            });
+        },
+        getCityData() {
+            this.$api.get('/v1/city.indicators.tree', {
+                city: this.city
+            }).then(res => {
+                if(res.error_code == '0') {
+                    this.treeData = res.data;
+                    // this.treeData.forEach(first => {
+                    //     this.treeFirst.push(first.id);
+                    // })
+                    this.isLoadingTree = false;
+                }
+            });
+        },
         onSubmit() {
             console.log(this.form);
             let form = _.cloneDeep(this.form);
@@ -423,6 +517,28 @@ export default {
             }
         }
     }
+    .field-folding {
+        padding: 0 50px;
+        .van-field__control {
+            display: block;
+        }
+        .van-cell {
+            padding: 20px 10px;
+            display: flex;
+            justify-content: space-between;
+            .van-cell__title {
+                margin: 0;
+
+                span {
+                    font-weight: normal;
+                    font-size: 28px;
+                }
+            }
+        }
+        .van-collapse-item__content {
+            padding: 0 30px;
+        }
+    }
     .filed-picker {
         .van-field__right-icon {
             position: absolute;
@@ -434,10 +550,10 @@ export default {
     }
     .chose-value {
         .van-field__control {
-        flex-direction: column;
-        .flex {
-            width: 100%;
-        }
+            flex-direction: column;
+            .flex {
+                width: 100%;
+            }
         }
     }
     .step-input {
