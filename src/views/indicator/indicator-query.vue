@@ -14,11 +14,11 @@
               <van-icon name="arrow-left" size="22" color="#060C19" />
           </template>
       </van-nav-bar>
-      <van-tabs v-model="tabActive" @click="onClick" color="#477CFF">
-          <van-tab :title="item.text" v-for="(item) in area" :key="item.value"></van-tab>
+      <van-tabs v-model="tabActive" @click="tabChange" color="#477CFF">
+          <van-tab :title="item.name" v-for="(item) in cities" :key="item.name"></van-tab>
       </van-tabs>
 
-      <van-loading v-if="loading" />
+      <div class="loading" v-if="loading"><van-loading /></div>
 
       <van-collapse v-model="firstActions" class="list" v-if="!loading">
         <van-collapse-item
@@ -42,7 +42,7 @@
 
           <div
             class="second-content"
-            v-for="(secondItem, secondIndex) in list.childlist"
+            v-for="(secondItem, secondIndex) in list.children_list"
             :key="secondIndex"
           >
             <div class="level-2 flex flex-center" @click.stop="onSelect($event, secondItem)">
@@ -64,7 +64,7 @@
             </div>
             <div
                 class="third"
-                v-for="(thirdItem, thirdIndex) in secondItem.childlist"
+                v-for="(thirdItem, thirdIndex) in secondItem.children_list"
                 :key="thirdIndex"
                 @click.stop="onSelect($event, thirdItem)"
               >
@@ -122,33 +122,30 @@ export default {
 					{ text: this.$t('common.delete'), icon: 'delete-o', type: 'delete' }
         ],
 				tabActive: 0,
-        area: [
-					{
-						text: '北京',
-						value: '1'
-					},
-					{
-						text: '上海',
-						value: '2'
-					},
-					{
-						text: '广州',
-						value: '3'
-					},
-					{
-						text: '深圳',
-						value: '4'
-					},
-        ],
         // showPopover: false,
-        loading: true
+        loading: true,
+        cities: [],
+        city: ''
       };
     },
     created() {
-      this.getList();
+      this.getCityList();
     },
     methods: {
-			onClick() {},
+      getCityList() {
+          this.$api.get('/v1/city.list')
+          .then(res => {
+              if(res && res.length) {
+                  this.cities = res;
+                  this.city = res[0].name;
+                  this.getList();
+              }
+          });
+      },
+			tabChange(index) {
+        this.city = this.cities[index].name;
+        this.getList();
+      },
       add() {
         this.$router.push('/indicator/form');
       },
@@ -157,6 +154,7 @@ export default {
         this.$api.get('/v1/indicators.tree', {
           per_page: this.per_page,
           page: this.page,
+          city: this.city
         })
         .finally(() => {
           this.loading = false;
