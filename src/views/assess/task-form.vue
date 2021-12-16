@@ -13,78 +13,116 @@
                <van-icon name="arrow-left" size="22" color="#060C19" />
             </template>
         </van-nav-bar>
-        <van-form @submit="onSubmit">
+        <van-form @submit="onSubmit" v-if="!loading">
             <van-field
+                readonly
+                clickable
+                name="选择指标"
+                v-model="form.indicator"
+                :label="$t('task.indicator')"
+                :placeholder="$t('task.indicator')"
+                @click="showTreePicker()"
+                class="filed-picker"
+                right-icon="arrow-down"
+                :rules="[{ required: true, message: $t('common.select')+$t('task.indicator') }]"
+            />
+            <van-popup v-model="indicatorPicker" round position="bottom">
+                <van-cascader
+                    v-model="cascaderValue"
+                    :title="$t('common.select')+$t('task.indicator')"
+                    :options="collection"
+                    @close="indicatorPicker = false"
+                    @finish="onFinish"
+                    @change="cascaderChange"
+                    active-color="#477CFF"
+                />
+            </van-popup>
+
+             <van-field
+                readonly
+                clickable
+                name="选择模板"
+                :value="form.template"
+                :label="$t('task.template')"
+                :placeholder="$t('task.template')"
+                @click="templatePicker = true"
+                class="filed-picker"
+                right-icon="arrow-down"
+                :rules="[{ required: true, message: $t('common.select')+$t('task.template') }]"
+            />
+            <van-popup v-model="templatePicker" position="bottom">
+                <van-picker
+                    show-toolbar
+                    :columns="templates"
+                    value-key="title"
+                    @confirm="changeTemplate"
+                    @cancel="templatePicker = false"
+                />
+            </van-popup>
+
+            <van-field name="考核方式" label="考核方式">
+                <template #input>
+                    <van-radio-group v-model="form.mode" direction="horizontal">
+                        <van-radio name="1">自评</van-radio>
+                        <van-radio name="2">互评</van-radio>
+                        <van-radio name="3">教师评价</van-radio>
+                    </van-radio-group>
+                </template>
+            </van-field>
+
+            <van-field name="是否需要提交" label="是否需要提交" class="filed-date">
+                <template #label>
+                    <span>是否需要提交</span>
+                </template>
+                <template #input>
+                    <van-radio-group v-model="form.is_commit" direction="horizontal">
+                        <van-radio name="1">是</van-radio>
+                        <van-radio name="2">否</van-radio>
+                    </van-radio-group>
+                </template>
+            </van-field>
+
+            <!-- <van-field
                 v-model="form.username"
                 name="用户名"
                 label="用户名"
                 placeholder="用户名"
                 :rules="[{ required: true, message: '请填写用户名' }]"
-            />
-            <van-field
-                v-model="form.password"
-                type="password"
-                name="密码"
-                label="密码"
-                placeholder="密码"
-                :rules="[{ required: true, message: '请填写密码' }]"
-            />
-            <van-field
+            /> -->
+            <!-- <van-field
                 v-model="form.message"
                 rows="1"
                 autosize
                 label="留言"
                 type="textarea"
                 placeholder="请输入留言"
-            />
-            <van-field name="radio" label="单选框">
-                <template #input>
-                    <van-radio-group v-model="form.radio" direction="horizontal">
-                        <van-radio name="1">单选框 1</van-radio>
-                        <van-radio name="2">单选框 2</van-radio>
-                    </van-radio-group>
-                </template>
-            </van-field>
-            <van-field name="checkboxGroup" label="复选框组">
+            /> -->
+            
+            <!-- <van-field name="checkboxGroup" label="复选框组">
                 <template #input>
                     <van-checkbox-group v-model="form.checkbox" direction="horizontal">
                     <van-checkbox name="1" shape="square">复选框 1</van-checkbox>
                     <van-checkbox name="2" shape="square">复选框 2</van-checkbox>
                     </van-checkbox-group>
                 </template>
-            </van-field>
+            </van-field> -->
 
             <van-field
                 readonly
                 clickable
-                name="picker"
-                :value="form.picker"
-                label="选择器"
-                placeholder="点击选择城市"
-                @click="showPicker = true"
-                class="filed-picker"
-                right-icon="arrow-down"
-            />
-            <van-popup v-model="showPicker" position="bottom">
-                <van-picker
-                    show-toolbar
-                    :columns="columns"
-                    @confirm="onConfirm"
-                    @cancel="showPicker = false"
-                />
-            </van-popup>
-
-            <van-field
-                readonly
-                clickable
-                name="picker"
-                :value="form.date"
-                label="选择器"
+                name="考核任务周期"
+                label="考核任务周期"
                 placeholder="点击选择日期"
-                @click="showDate = true"
-                class="filed-picker"
-                right-icon="arrow-down"
-            />
+                class="filed-date"
+            >
+                <template #label>
+                    <span>考核任务周期</span>
+                </template>
+                <template #input>
+                    <input type="text" v-model="form.date" placeholder="起" class="van-field__control mb20" @click="showDate = true"  />
+                    <input type="text" v-model="form.date" placeholder="止" class="van-field__control" @click="showDate = true"  />
+                </template>
+            </van-field>
             <van-popup v-model="showDate" position="bottom">
                 <van-datetime-picker
                     type="date"
@@ -98,13 +136,13 @@
                 />
             </van-popup>
 
-            <van-field name="uploader" label="文件上传">
+            <!-- <van-field name="uploader" label="文件上传">
                 <template #input>
                     <van-uploader v-model="uploader">
                         <van-button icon="plus" type="primary" class="upload-btn" block>上传文件</van-button>
                     </van-uploader>
                 </template>
-            </van-field>
+            </van-field> -->
 
             <van-field name="radio" label="选择成员">
                 <template #input>
@@ -128,7 +166,7 @@
                     title="选择成员"
                     left-arrow
                     right-text="完成"
-                    @click-left="closeMemberPop"
+                    @click-left="showMember = false"
                     @click-right="confirmMemberPop"
                     :safe-area-inset-top="true"
                     :fixed="true"
@@ -142,7 +180,7 @@
                     <div v-for="(list, index) in memberList" :key="index">
                         <van-index-anchor :index="list.index" />
                         <van-cell class="flex" v-for="(member, _index) in list.list" :key="_index">
-                            <van-checkbox v-model="member.check" shape="square" class="check-list">
+                            <van-checkbox v-model="member.check" shape="square" class="check-list" @change="checkMember($event, member)">
                                 <avatar src="https://img01.yzcdn.cn/vant/cat.jpeg" size="36" :name="member.name" :description="member.description"></avatar>
                             </van-checkbox>
                         </van-cell>
@@ -150,10 +188,10 @@
                 </van-index-bar>
                 <van-submit-bar  @submit="onSubmit">
                     <template #default>
-                        <van-checkbox v-model="checkAll" shape="square">全选</van-checkbox>
+                        <van-checkbox v-model="checkAll" shape="square" @click="toggleChange">全选</van-checkbox>
                     </template>
                     <template #button>
-                        <div class="member-count flex flex-center" @click="showSelected">已选 12 人<van-icon name="arrow-up" color="#5E636E" size="20" /></div>
+                        <div class="member-count flex flex-center" @click="showSelected">已选 {{ selectedMembers.length }} 人<van-icon name="arrow-up" color="#5E636E" size="20" /></div>
                     </template>
                     
                 </van-submit-bar>
@@ -161,7 +199,7 @@
         </van-popup>
 
         <van-popup 
-            v-model="selectedMember"
+            v-model="showSelectedMember"
             closeable
             round
             close-icon-position="top-left"
@@ -170,10 +208,10 @@
             :style="{ height: '90%' }"
         >
             <div class="pop-content">
-                <div class="member-count">已选 12 人</div>
-                <div class="member-list flex flex-center" v-for="(member, index) in 5" :key="index">
-                    <avatar src="https://img01.yzcdn.cn/vant/cat.jpeg" size="36" name="张三"></avatar>
-                    <van-icon name="cross" color="#5E636E" size="20" />
+                <div class="member-count">已选 {{ selectedMembers.length }} 人</div>
+                <div class="member-list flex flex-center" v-for="(member, index) in selectedMembers" :key="index">
+                    <avatar src="https://img01.yzcdn.cn/vant/cat.jpeg" size="36" :name="member.name"></avatar>
+                    <van-icon name="cross" color="#5E636E" size="20" @click="removeMember(member)" />
                 </div>
             </div>
         </van-popup>
@@ -181,21 +219,28 @@
 </template>
 
 <script>
+import _ from 'lodash';
 import avatar from '../../components/avatar.vue';
 export default {
     components: { avatar },
     name: 'task-detail',
     data() {
         return {
+            loading: true,
             form: {
-                username: '',
-                password: '',
-                message: '',
-                radio: '1',
-                checkbox: [],
-                picker: '',
+                indicator: '',
+                indicators_id: '',
+                template: '',
+                template_id: '',
+                mode: '1',
+                is_commit: '1',
                 date: ''
             },
+            cascaderValue: '',
+            collection: [],
+            indicatorPicker: false,
+            templatePicker: false,
+            templates: [],
             uploader: [],
             showPicker: false,
             showDate: false,
@@ -204,7 +249,7 @@ export default {
             maxDate: new Date(2025, 10, 1),
             currentDate: new Date(),
             showMember: false,
-            selectedMember: false,
+            showSelectedMember: false,
             memberName: '',
             checkAll: false,
             memberList: [
@@ -212,11 +257,13 @@ export default {
                     index: 'A',
                     list: [
                         {
+                            id: '1',
                             name: '张三',
                             description: '在职',
                             check: false
                         },
                         {
+                            id: '2',
                             name: '张三',
                             description: '在职',
                             check: false
@@ -227,22 +274,80 @@ export default {
                     index: 'B',
                     list: [
                         {
+                            id: '3',
                             name: '张三',
                             description: '在职',
                             check: false
                         },
                         {
+                            id: '4',
                             name: '张三',
                             description: '在职',
                             check: false
                         },
                     ]
                 }
-            ]
+            ],
+            selectedMembers: []
         };
     },
-    created() {},
+    created() {
+        this.getIndicators();
+        this.getTemplates();
+    },
     methods: {
+        getIndicators() {
+            this.loading = true;
+            this.$api.get('/v1/indicators.tree')
+            .finally(() => {
+                this.loading = false;
+            })
+            .then(res => {
+                if(res.error_code == 0) {
+                    let list = res.list;
+                    list.forEach(first => {
+                        first.text = first.title;
+                        first.value = first.id;
+                        if(first.children_list) {
+                            first.children = first.children_list;
+                            first.children.forEach(second => {
+                                second.text = second.title;
+                                second.value = second.id;
+                                delete second.children_list;
+                            })
+                        }
+                    });
+                    this.collection = list;
+                }
+            })
+        },
+        getTemplates() {
+            let params = {
+                per_page: 20,
+                page: 1,
+            }
+            this.$api.get('/v1/template.list', params)
+            .then(res => {
+                if(res.error_code == 0) {
+                    this.templates = res.data.list;
+                }
+            })
+        },
+        showTreePicker() {
+            this.indicatorPicker = true;
+        },
+        onFinish({ selectedOptions }) {
+            this.indicatorPicker = false;
+        },
+        cascaderChange({ value, selectedOptions, tabIndex }) {
+            this.form.indicator = selectedOptions.map((option) => option.text).join('/');
+            this.form.indicators_id = value;
+        },
+        changeTemplate(option) {
+            this.form.template = option.title;
+            this.form.template_id = option.id;
+            this.templatePicker = false;
+        },
         onSubmit() {},
         onClickLeft() {
             this.$router.go(-1)
@@ -272,14 +377,42 @@ export default {
             this.showMember = true;
         },
         showSelected() {
-             this.selectedMember = true;
-        },
-        closeMemberPop() {
-            this.showMember = false;
+             this.showSelectedMember = true;
         },
         confirmMemberPop() {
             this.showMember = false;
         },
+        // 成员全选
+        toggleChange($event) {
+            console.log(this.checkAll);
+            if(this.checkAll) {
+                this.memberList.forEach(member => {
+                    member.list.forEach(item => {
+                        item.check = true;
+                    })
+                    // this.selectedMembers = this.selectedMembers.concat(member.list);
+                })
+            }else {
+                this.memberList.forEach(member => {
+                    member.list.forEach(item => {
+                        item.check = false;
+                    })
+                })
+                // this.selectedMembers = [];
+            }
+        },
+        checkMember(value, member) {
+            if(value) {
+                this.selectedMembers.push(member);
+            }else {
+                let index = _.findIndex(this.selectedMembers, function(o) { return o.id == member.id; });
+                this.selectedMembers.splice(index, 1);
+                this.checkAll = false;
+            }
+        },
+        removeMember(member) {
+            console.log(member);
+        }
     }
 }
 
@@ -348,6 +481,14 @@ export default {
         .van-field__right-icon {
             position: absolute;
             right: 10px;
+        }
+    }
+    .filed-date {
+        .van-cell__title {
+            width: auto;
+        }
+        .van-field__control {
+            flex-direction: column;
         }
     }
     .add {

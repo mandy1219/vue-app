@@ -3,8 +3,9 @@
         <van-nav-bar
             title="考核"
             left-arrow
+            :right-text="$t('common.add')"
             @click-left="$back"
-            @click-right="onClickRight"
+            @click-right="add"
             :safe-area-inset-top="true"
             :placeholder="true"
             :fixed="true"
@@ -74,7 +75,7 @@ export default {
             })
         },
         toDetail(item) {
-            this.$router.push({ path: '/assess/detail', query: { id: item.id }});
+            this.$router.push({ path: '/assess/form', query: { id: item.id }});
         },
         onClick() {
 
@@ -82,7 +83,9 @@ export default {
         onClickLeft() {
             this.$router.go(-1)
         },
-        onClickRight() {}
+        add() {
+            this.$router.push({ path: '/assess/form'});
+        }
     }
 }
 

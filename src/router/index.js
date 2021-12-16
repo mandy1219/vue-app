@@ -4,7 +4,8 @@ import Home from '../views/Home.vue'
 import Form from '../views/form/form.vue';
 import AssessIndex from '../views/assess/index.vue';
 import AssessTaskList from '../views/assess/task-list.vue';
-import AssessTaskDetail from '../views/assess/task-detail.vue';
+import AssessTaskForm from '../views/assess/task-form.vue';
+
 import IndicatorIndex from '../views/indicator/index.vue';
 import IndicatorRouter from '../views/indicator/indicator-router.vue';
 import IndicatorList from '../views/indicator/indicator-list.vue';
@@ -49,9 +50,9 @@ const routes = [
         component: AssessTaskList
       },
       {
-        path: 'detail',
-        name: 'task-detail',
-        component: AssessTaskDetail
+        path: 'form',
+        name: 'task-form',
+        component: AssessTaskForm
       }
     ]
   },

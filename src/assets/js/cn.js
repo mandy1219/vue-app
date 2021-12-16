@@ -41,6 +41,10 @@ module.exports = {
       'img': '图片',
       'validationValue': '至少有一个值'
     },
+    task: {
+      'indicator': '指标',
+      'template': '模板',
+    },
     common: {
       'confirm': '确定',
       'add': '新增',
