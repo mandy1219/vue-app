@@ -316,7 +316,7 @@ export default {
                 })
             }
         });
-        this.collection = this.collection.concat(tree);
+        this.collection = this.collection.concat(list);
         // console.log(this.collection);
 
         if(this.parentId) {
