@@ -16,6 +16,10 @@ import TemplateIndex from '../views/template/index.vue';
 import TemplateList from '../views/template/template-list.vue';
 import TemplateForm from '../views/template/template-form.vue';
 
+import MaterialIndex from '../views/material/index.vue';
+import MaterialList from '../views/material/material-list.vue';
+import MaterialForm from '../views/material/material-form.vue';
+
 Vue.use(VueRouter)
 
 const routes = [
@@ -97,6 +101,23 @@ const routes = [
         path: 'form',
         name: 'template-form',
         component: TemplateForm
+      }
+    ]
+  },
+  {
+    path: '/material',
+    name: 'material',
+    component: MaterialIndex,
+    children: [
+      {
+        path: 'list',
+        name: 'material-list',
+        component: MaterialList
+      },
+      {
+        path: 'form',
+        name: 'material-form',
+        component: MaterialForm
       }
     ]
   },

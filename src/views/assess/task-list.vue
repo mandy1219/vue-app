@@ -106,7 +106,7 @@ export default {
                 font-weight: bold;
             }
             .content {
-                margin-top: 10px;
+                margin-top: 20px;
                 .van-icon {
                     margin-right: 5px;
                 }

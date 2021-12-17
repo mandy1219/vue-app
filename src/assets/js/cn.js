@@ -45,6 +45,16 @@ module.exports = {
       'indicator': '指标',
       'template': '模板',
     },
+    material: {
+      'materialManage': '物资管理',
+      'materialDetail': '物资详情',
+      'materialAdd': '新增物资',
+      'materialEdit': '编辑物资',
+      'materialName': '物资名称',
+      'materialStatus': '状态',
+      'instructions': '物资说明',
+      'materialCount': '数量'
+    },
     common: {
       'confirm': '确定',
       'add': '新增',

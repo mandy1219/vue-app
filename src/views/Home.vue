@@ -28,6 +28,10 @@ export default {
           name: '评价管理',
           path: 'template/list'
         },
+        {
+          name: '物资管理',
+          path: 'material/list'
+        },
       ]
     }
   },
