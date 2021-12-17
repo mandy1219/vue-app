@@ -384,7 +384,7 @@ export default {
         },
         // 成员全选
         toggleChange($event) {
-            console.log(this.checkAll);
+            // console.log(this.checkAll);
             if(this.checkAll) {
                 this.memberList.forEach(member => {
                     member.list.forEach(item => {

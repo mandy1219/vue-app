@@ -107,36 +107,36 @@ export default {
         },
         edit(event, item) {
             switch(event.type) {
-            case 'edit':
-                this.$router.push({ path: '/template/form?id='+item.id});
-                break;
-            case 'delete':
-                console.log(item);
-                this.$dialog.confirm({
-                    title: '',
-                    message: this.$t('template.deleteConfirm'),
-                    beforeClose: (action, done) => {
-                        if (action === 'confirm') {
-                            this.$api.get('/v1/template.delete', {
-                                id: item.id
-                            }).then(res => {
-                                if(res.error_code == '0') {
-                                    this.$toast.success(this.$t('common.delete')+this.$t('common.success'));
-                                    this.loading = true;
-                                    this.finished = false;
-                                    this.getList();
-                                    done();
-                                }
-                            })
-                        } else {
-                            done();
+                case 'edit':
+                    this.$router.push({ path: '/template/form?id='+item.id});
+                    break;
+                case 'delete':
+                    console.log(item);
+                    this.$dialog.confirm({
+                        title: '',
+                        message: this.$t('template.deleteConfirm'),
+                        beforeClose: (action, done) => {
+                            if (action === 'confirm') {
+                                this.$api.get('/v1/template.delete', {
+                                    id: item.id
+                                }).then(res => {
+                                    if(res.error_code == '0') {
+                                        this.$toast.success(this.$t('common.delete')+this.$t('common.success'));
+                                        this.loading = true;
+                                        this.finished = false;
+                                        this.getList();
+                                        done();
+                                    }
+                                })
+                            } else {
+                                done();
+                            }
                         }
-                    }
-                })
-                break;
-            default:
-                this.$router.push({ path: '/template/form', query: { id: item.id,  disabled: true }});
-                break;
+                    })
+                    break;
+                default:
+                    this.$router.push({ path: '/template/form', query: { id: item.id,  disabled: true }});
+                    break;
             }
         }
     }

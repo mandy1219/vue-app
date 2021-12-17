@@ -105,6 +105,17 @@ export default {
                 color: #323842;
                 font-weight: bold;
             }
+            .content {
+                margin-top: 10px;
+                .van-icon {
+                    margin-right: 5px;
+                }
+                .text {
+                    margin: 0 5px;
+                    font-style: normal;
+                    font-weight: bold;
+                }
+            }
         }
         .card-handle {
             padding: 26px 20px;
