@@ -32,6 +32,10 @@ export default {
           name: '物资管理',
           path: 'material/list'
         },
+        {
+          name: '房间管理',
+          path: 'room/list'
+        },
       ]
     }
   },

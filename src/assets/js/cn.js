@@ -55,6 +55,17 @@ module.exports = {
       'instructions': '物资说明',
       'materialCount': '数量'
     },
+    room: {
+      'roomManage': '房间管理',
+      'roomDetail': '房间详情',
+      'roomAdd': '新增房间',
+      'roomEdit': '编辑房间',
+      'roomName': '房间名称',
+      'roomStatus': '状态',
+      'description': '房间描述',
+      'roomCount': '楼层',
+      'instructions': '房间说明',
+    },
     common: {
       'confirm': '确定',
       'add': '新增',

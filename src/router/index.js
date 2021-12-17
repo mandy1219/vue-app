@@ -20,6 +20,10 @@ import MaterialIndex from '../views/material/index.vue';
 import MaterialList from '../views/material/material-list.vue';
 import MaterialForm from '../views/material/material-form.vue';
 
+import RoomIndex from '../views/room/index.vue';
+import RoomList from '../views/room/room-list.vue';
+import RoomForm from '../views/room/room-form.vue';
+
 Vue.use(VueRouter)
 
 const routes = [
@@ -118,6 +122,23 @@ const routes = [
         path: 'form',
         name: 'material-form',
         component: MaterialForm
+      }
+    ]
+  },
+  {
+    path: '/room',
+    name: 'room',
+    component: RoomIndex,
+    children: [
+      {
+        path: 'list',
+        name: 'room-list',
+        component: RoomList
+      },
+      {
+        path: 'form',
+        name: 'room-form',
+        component: RoomForm
       }
     ]
   },
