@@ -38,7 +38,9 @@ import {
     Loading,
     Switch,
     Stepper,
-    List
+    List,
+    DropdownMenu,
+    DropdownItem
 } from 'vant';
 
 const components = [
@@ -79,7 +81,9 @@ const components = [
     Loading,
     Switch,
     Stepper,
-    List
+    List,
+    DropdownMenu,
+    DropdownItem
 ];
 
 components.forEach(component => {

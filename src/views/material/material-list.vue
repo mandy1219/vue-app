@@ -14,6 +14,10 @@
                 <van-icon name="arrow-left" size="22" color="#060C19" />
             </template>
         </van-nav-bar>
+        <van-dropdown-menu active-color="#477CFF">
+            <van-dropdown-item v-model="value1" :options="option1" title="状态" />
+            <van-dropdown-item v-model="value2" :options="option2" title="是否需要归还" />
+        </van-dropdown-menu>
         <van-list
             v-model="loading"
             :finished="finished"
@@ -77,6 +81,16 @@ export default {
                 { text: this.$t('common.view'), icon: 'orders-o', type: 'detail' }, 
                 { text: this.$t('common.edit'), icon: 'edit', type: 'edit' },
                 { text: this.$t('common.delete'), icon: 'delete-o', type: 'delete' }
+            ],
+            value1: 0,
+            value2: 'a',
+            option1: [
+                { text: '使用中', value: 1 },
+                { text: '已使用', value: 2 },
+            ],
+            option2: [
+                { text: '需要归还', value: 'b' },
+                { text: '不需要归还', value: 'c' },
             ],
         };
     },
