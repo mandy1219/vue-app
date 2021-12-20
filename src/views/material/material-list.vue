@@ -100,6 +100,7 @@ export default {
              this.$router.push('/material/form');
         },
         onLoad() {
+            console.log(111);
             this.finished = true;
             // if (this.listData.length >= this.total) {
             //     this.finished = true;
