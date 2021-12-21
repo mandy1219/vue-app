@@ -2,9 +2,14 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import Form from '../views/form/form.vue';
+
 import AssessIndex from '../views/assess/index.vue';
-import AssessTaskList from '../views/assess/task-list.vue';
-import AssessTaskForm from '../views/assess/task-form.vue';
+import AssessTaskList from '../views/assess/assess-list.vue';
+import AssessTaskForm from '../views/assess/assess-form.vue';
+
+import TaskIndex from '../views/task/index.vue';
+import TaskList from '../views/task/task-list.vue';
+import TaskForm from '../views/task/task-form.vue';
 
 import IndicatorIndex from '../views/indicator/index.vue';
 import IndicatorRouter from '../views/indicator/indicator-router.vue';
@@ -54,13 +59,30 @@ const routes = [
     children: [
       {
         path: 'list',
-        name: 'task-list',
+        name: 'assess-list',
         component: AssessTaskList
       },
       {
         path: 'form',
-        name: 'task-form',
+        name: 'assess-form',
         component: AssessTaskForm
+      }
+    ]
+  },
+  {
+    path: '/task',
+    name: 'task',
+    component: TaskIndex,
+    children: [
+      {
+        path: 'list',
+        name: 'task-list',
+        component: TaskList
+      },
+      {
+        path: 'form',
+        name: 'task-form',
+        component: TaskForm
       }
     ]
   },

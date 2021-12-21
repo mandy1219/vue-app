@@ -1,11 +1,9 @@
 <template>
     <div>
         <van-nav-bar
-            title="考核"
+            title="我的任务"
             left-arrow
-            :right-text="$t('common.add')"
             @click-left="$back"
-            @click-right="add"
             :safe-area-inset-top="true"
             :placeholder="true"
             :fixed="true"
@@ -13,14 +11,11 @@
             <template #left>
                <van-icon name="arrow-left" size="22" color="#060C19" />
             </template>
-            <template #right>
-               <!-- <van-icon name="arrow-left" size="22" color="#060C19" /> -->
-            </template>
         </van-nav-bar>
         <van-tabs v-model="active" @click="onClick" color="#477CFF">
             <van-tab title="全部"></van-tab>
-            <van-tab title="待完成"></van-tab>
-            <van-tab title="已完成"></van-tab>
+            <van-tab title="待提交"></van-tab>
+            <van-tab title="已提交"></van-tab>
         </van-tabs>
         <div class="card-list">
             <div class="card" v-for="(item) in listData" :key="item.id" @click="toDetail(item)">

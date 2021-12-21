@@ -44,6 +44,10 @@ module.exports = {
     task: {
       'indicator': '指标',
       'template': '模板',
+      'taskName': '考核任务',
+      'taskAdd': '新增考核',
+      'taskEdit': '编辑考核',
+      'taskDetail': '考核详情',
     },
     material: {
       'materialManage': '物资管理',

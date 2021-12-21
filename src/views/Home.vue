@@ -17,7 +17,7 @@ export default {
       show: false,
       grid: [
         {
-          name: '考核',
+          name: '考核管理',
           path: 'assess/list'
         },
         {
@@ -35,6 +35,10 @@ export default {
         {
           name: '房间管理',
           path: 'room/list'
+        },
+        {
+          name: '我的任务',
+          path: 'task/list'
         },
       ]
     }
