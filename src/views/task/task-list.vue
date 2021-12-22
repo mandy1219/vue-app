@@ -13,29 +13,48 @@
             </template>
         </van-nav-bar>
         <van-tabs v-model="active" @click="onClick" color="#477CFF">
-            <van-tab title="全部"></van-tab>
-            <van-tab title="待提交"></van-tab>
-            <van-tab title="已提交"></van-tab>
+            <!-- <van-tab title="全部"></van-tab> -->
+            <van-tab title="待提交" :name="'1'"></van-tab>
+            <van-tab title="待评价" :name="'2'"></van-tab>
+            <van-tab title="已评价" :name="'3'"></van-tab>
+            <van-tab title="被质疑" :name="'4'"></van-tab>
         </van-tabs>
-        <div class="card-list">
-            <div class="card" v-for="(item) in listData" :key="item.id" @click="toDetail(item)">
-                <div class="card-info">
-                    <div class="flex flex-center">
-                        <p class="title ellipsis">{{ item.indicators.title }}</p>
-                        <div class="flex"><van-tag round type="primary">{{ item.examine.ch_mode }}</van-tag></div>
+        <van-list
+            v-if="listData.length"
+            v-model="loading"
+            :finished="finished"
+            finished-text="没有更多了"
+            @load="getList"
+            class="card-list"
+            :offset="'0'"
+        >
+            <template v-if="listData.length">
+                <div class="card" v-for="(item) in listData" :key="item.id" @click="toDetail(item)">
+                    <div class="card-info">
+                        <div class="flex flex-center">
+                            <p class="title ellipsis">{{ item.examine_title }}</p>
+                            <div class="flex"><van-tag round type="primary">{{ item.status_m }}</van-tag></div>
+                        </div>
+                        <div class="content">
+                            <span class="mr20">
+                                指标:<i class="text">{{ item.indicators_title }}</i>
+                            </span>
+                            <!-- <span>
+                                模板:<i class="text">{{ item.template_title }}</i>
+                            </span> -->
+                        </div>
                     </div>
-                    <div class="content">
-
+                    <div class="card-handle flex flex-center">
+                        <span class="time">{{ item.created_at }}</span>
+                        <span class="arrow">
+                            详情<van-icon name="arrow" />
+                        </span>
                     </div>
                 </div>
-                <div class="card-handle flex flex-center">
-                    <span class="time">{{ item.examine.examine_start_time }}</span>
-                    <span class="arrow">
-                        详情<van-icon name="arrow" />
-                    </span>
-                </div>
-            </div>
-        </div>
+            </template>
+            
+        </van-list>
+        <van-empty v-else description="暂无数据" />
         <router-view></router-view>
     </div>
 </template>
@@ -44,36 +63,53 @@
 export default {
     name: 'task-list',
     data() {
-      return {
-          active: 0,
-          page: 1,
-          per_page: 20,
-          listData: [],
-          status: 0
-      };
+        return {
+            active: 1,
+            page: 1,
+            per_page: 10,
+            total: 0,
+            listData: [],
+            loading: false,
+            finished: false
+        };
     },
     created() {
-        this.getList();
+        // this.getList();
     },
     methods: {
         getList() {
+            this.loading = true;
             let params = {
                 per_page: this.per_page,
                 page: this.page,
-                status: this.status
+                status: this.active
             }
             this.$api.get('/v1/examine.record.user.list', params)
             .then(res => {
                 if(res.error_code == 0) {
-                    this.listData = res.data.list;
+                    this.listData = this.listData.concat(res.data.list);
+                    this.total = res.data.paginate.total;
+                    if (this.listData.length >= this.total) {
+                        this.finished = true;
+                    } else {
+                        this.finished = false;
+                        this.page = this.page + 1
+                    }
+                    this.loading = false
                 }
             })
+            .catch(error => {
+                this.$toast('请求错误');
+            })
+            
         },
         toDetail(item) {
             this.$router.push({ path: '/assess/form', query: { id: item.id }});
         },
         onClick() {
-
+            this.page = 1;
+            this.listData = [];
+            this.getList();
         },
         onClickLeft() {
             this.$router.go(-1)

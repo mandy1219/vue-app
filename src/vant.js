@@ -40,7 +40,8 @@ import {
     Stepper,
     List,
     DropdownMenu,
-    DropdownItem
+    DropdownItem,
+    Empty
 } from 'vant';
 
 const components = [
@@ -83,7 +84,8 @@ const components = [
     Stepper,
     List,
     DropdownMenu,
-    DropdownItem
+    DropdownItem,
+    Empty
 ];
 
 components.forEach(component => {
