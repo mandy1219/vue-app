@@ -193,134 +193,35 @@
             class="select-member-pop"
             :style="{ height: '100%' }"
         >
-            <div class="pop-content">
-                <van-nav-bar
-                    title="选择成员"
-                    left-arrow
-                    right-text="确定"
-                    @click-left="showMember = false"
-                    @click-right="showMember = false"
-                    :safe-area-inset-top="true"
-                    :fixed="true"
-                >
-                    <template #left>
-                        <van-icon name="cross" size="18" color="#060C19" />
-                    </template>
-                </van-nav-bar>
-                <van-search v-model="memberName" placeholder="请输入搜索关键词" />
-                <!-- <van-index-bar>
-                    <div v-for="(list, index) in memberList" :key="index">
-                        <van-index-anchor :index="list.index" />
-                        <van-cell class="flex" v-for="(member, _index) in list.list" :key="_index">
-                            <van-checkbox v-model="member.check" shape="square" class="check-list" @change="checkMember($event, member)">
-                                <avatar src="https://img01.yzcdn.cn/vant/cat.jpeg" size="36" :name="member.name" :description="member.description"></avatar>
-                            </van-checkbox>
-                        </van-cell>
-                    </div>
-                </van-index-bar> -->
-                <div class="loading" v-if="loadingMember"><van-loading /></div>
-                <van-checkbox-group v-model="form.user_ids" ref="checkboxGroup" v-if="!loadingMember && memberPopType == 1">
-                    <van-cell-group v-if="form.target == 1">
-                        <van-cell
-                            class="flex"
-                            v-for="(member, index) in students"
-                            :key="index"
-                            clickable
-                            @click="toggle(index, member)"
-                        >
-                            <van-checkbox ref="checkboxes" shape="square" class="check-list" :name="member.user_id">
-                                <avatar src="https://img01.yzcdn.cn/vant/cat.jpeg" size="36" :name="member.name" :description="member.description"></avatar>
-                            </van-checkbox>
-                        </van-cell>
-                    </van-cell-group>
-                    <van-cell-group v-if="form.target == 2">
-                        <van-cell
-                            class="flex"
-                            v-for="(member, index) in teachers"
-                            :key="index"
-                            clickable
-                            @click="toggle(index, member)"
-                        >
-                            <van-checkbox ref="checkboxes" shape="square" class="check-list" :name="member.user_id">
-                                <avatar src="https://img01.yzcdn.cn/vant/cat.jpeg" size="36" :name="member.name" :description="member.description"></avatar>
-                            </van-checkbox>
-                        </van-cell>
-                    </van-cell-group>
-                </van-checkbox-group>
-
-                <van-checkbox-group v-model="form.comment_ids" ref="checkboxGroup" v-if="!loadingMember && memberPopType == 2">
-                    <van-cell-group v-if="form.mode == 2">
-                        <van-cell
-                            class="flex"
-                            v-for="(member, index) in students"
-                            :key="index"
-                            clickable
-                            @click="toggle(index, member)"
-                        >
-                            <van-checkbox ref="checkboxes" shape="square" class="check-list" :name="member.user_id">
-                                <avatar src="https://img01.yzcdn.cn/vant/cat.jpeg" size="36" :name="member.name" :description="member.description"></avatar>
-                            </van-checkbox>
-                        </van-cell>
-                    </van-cell-group>
-                    <van-cell-group v-if="form.mode == 3">
-                        <van-cell
-                            class="flex"
-                            v-for="(member, index) in teachers"
-                            :key="index"
-                            clickable
-                            @click="toggle(index, member)"
-                        >
-                            <van-checkbox ref="checkboxes" shape="square" class="check-list" :name="member.user_id">
-                                <avatar src="https://img01.yzcdn.cn/vant/cat.jpeg" size="36" :name="member.name" :description="member.description"></avatar>
-                            </van-checkbox>
-                        </van-cell>
-                    </van-cell-group>
-                </van-checkbox-group>
-
-                <van-submit-bar  v-if="!loadingMember">
-                    <template #default>
-                        <div class="check-all">
-                            <van-checkbox v-model="checkAll" shape="square" name="checkAll">全选</van-checkbox>
-                            <van-button type="primary" @click="toggleChange">全选</van-button>
-                        </div>
-                    </template>
-                    <template #button>
-                        <div class="member-count flex flex-center" @click="showSelectedMember = true">
-                            <template v-if="memberPopType == 1">已选 {{ form.user_ids.length }} 人</template>
-                            <template v-if="memberPopType == 2">已选 {{ form.comment_ids.length }} 人</template>
-                            <!-- <template>已选 {{ selectedMembers.length }} 人</template> -->
-                            <van-icon name="arrow-up" color="#5E636E" size="20" />
-                        </div>
-                    </template>
-                </van-submit-bar>
-            </div>
+            <div class="loading" v-if="loadingMember"><van-loading /></div>
+            <template  v-if="!loadingMember">
+                <member-list v-if="show && form.target == 1" title="选择考核对象" :member-list="students" :user-ids="form.user_ids" @close="closeMember" @confirm="confirmMember"></member-list> 
+                <member-list v-if="show && form.target == 2" title="选择考核对象" :member-list="teachers" :user-ids="form.user_ids" @close="closeMember" @confirm="confirmMember"></member-list> 
+            </template>
         </van-popup>
 
         <van-popup 
-            v-model="showSelectedMember"
-            closeable
-            round
-            close-icon-position="top-left"
+            v-model="showComment"
             position="bottom"
-            class="member-pop"
-            :style="{ height: '90%' }"
+            class="select-member-pop"
+            :style="{ height: '100%' }"
         >
-            <div class="pop-content">
-                <div class="member-count">已选 {{ selectedMembers.length }} 人</div>
-                <div class="member-list flex flex-center" v-for="(member, index) in selectedMembers" :key="index">
-                    <avatar src="https://img01.yzcdn.cn/vant/cat.jpeg" size="36" :name="member.name"></avatar>
-                    <van-icon name="cross" color="#5E636E" size="20" @click="removeMember(member)" />
-                </div>
-            </div>
+            <div class="loading" v-if="loadingMember"><van-loading /></div>
+            <template  v-if="!loadingMember">
+                <member-list v-if="show && form.mode == 2" title="选择评价人员" :member-list="students" :user-ids="form.comment_ids" @close="closeComment" @confirm="confirmComment"></member-list> 
+                <member-list v-if="show && form.mode == 3" title="选择评价人员" :member-list="teachers" :user-ids="form.comment_ids" @close="closeComment" @confirm="confirmComment"></member-list> 
+            </template>
         </van-popup>
+
     </div>
 </template>
 
 <script>
 import _ from 'lodash';
 import avatar from '../../components/avatar.vue';
+import memberList from '../../components/member-list.vue';
 export default {
-    components: { avatar },
+    components: { memberList },
     name: 'assess-detail',
     data() {
         return {
@@ -347,23 +248,14 @@ export default {
             indicatorPicker: false,
             templatePicker: false,
             templates: [],
-            uploader: [],
-            showPicker: false,
-            showDate: false,
-            columns: ['杭州', '宁波', '温州', '绍兴', '湖州', '嘉兴', '金华', '衢州'],
-            minDate: new Date(2020, 0, 1),
-            maxDate: new Date(2025, 10, 1),
-            currentDate: new Date(),
             showMember: false,
+            showComment: false,
             showSelectedMember: false,
-            memberName: '',
-            checkAll: false,
-            memberList: [],
-            selectedMembers: [],
+            members: [],
             students: [],
             teachers: [],
             loadingMember: true,
-            memberPopType: null
+            show: false
         };
     },
     created() {
@@ -468,14 +360,12 @@ export default {
         },
         // 选择考核对象 判断获取学生列表或教师列表
         targetChange() {
-            this.memberPopType = 1;
             this.form.user_ids = [];
-            this.defaultFn();
+            this.show = false;
         },
         modeChange() {
-            this.memberPopType = 2;
             this.form.comment_ids = [];
-            this.defaultFn();
+            this.show = false;
         },
         // 是否需要提交 是的话选择模板
         commitChange(name) {
@@ -497,7 +387,7 @@ export default {
             .then(res => {
                 if(res.error_code == '0') {
                     this.students = res.list;
-                    this.memberList = this.students;
+                    // this.memberList = this.students;
                 }
             });
         },
@@ -513,7 +403,7 @@ export default {
             .then(res => {
                 if(res.error_code == '0') {
                     this.teachers = res.list;
-                    this.memberList = this.teachers;
+                    // this.memberList = this.teachers;
                 }
             });
         },
@@ -549,79 +439,38 @@ export default {
         },
         // 打开考核对象pop
         showTargetMemberList() {
-            this.memberPopType = 1;
-            if(this.form.target == 1) {
-                this.memberList = this.students;
-            } else {
-                this.memberList = this.teachers;
-            }
-            if(this.form.user_ids.length == this.memberList.length) {
-                if(this.$refs.checkboxGroup) {
-                    this.$refs.checkboxGroup.toggleAll(false);
-                }
-                this.checkAll = true;
-            } else {
-                this.checkAll = false;
-            }
             this.showMember = true;
-            // console.log(this.selectedMembers);
+            this.show = true; // 此处加show是为了让组件每次打开都触发created
         },
         // 打开评价人pop
         showModeMemberList() {
-            this.memberPopType = 2;
-            if(this.form.mode == 2) {
-                this.memberList = this.students;
-            } else {
-                this.memberList = this.teachers;
-            }
-            if(this.form.comment_ids == this.memberList.length) {
-                this.$refs.checkboxGroup.toggleAll(true);
-                this.checkAll = true;
-            } else {
-                this.checkAll = false;
-            }
-            this.showMember = true;
-        },
-        defaultFn() {
-            this.checkAll = false;
-            this.selectedMembers = [];
-            if(this.$refs.checkboxGroup) {
-                this.$refs.checkboxGroup.toggleAll(false);
-            }
-        },
-        // 成员全选
-        toggleChange() {
-            if(this.checkAll) {
-                this.$refs.checkboxGroup.toggleAll(false);
-                this.checkAll = false;
-                this.selectedMembers = [];
-            } else {
-                this.$refs.checkboxGroup.toggleAll(true);
-                this.checkAll = true;
-                this.selectedMembers = _.cloneDeep(this.memberList);
-            }
-        },
-        // checkbox事件
-        toggle(index, member) {
-            this.$refs.checkboxes[index].toggle(); // 切换每个checkbox状态
-            if(this.$refs.checkboxes[index].checked) {
-                let index = _.findIndex(this.selectedMembers, function(o) { return o.id == member.id; });
-                this.selectedMembers.splice(index, 1);
-            } else {
-                this.selectedMembers.push(member);
-            }
-            // 判断所有人和已选人数量是否一样
-            if(this.selectedMembers.length == this.memberList.length) {
-                this.checkAll = true;
-            } else {
-                this.checkAll = false;
-            }
+            this.showComment = true;
+            this.show = true;
         },
         removeMember(member) {
             console.log(member);
         },
+        // 详情页编辑
         edit() {
             this.disabled = false;
+        },
+        // 关闭选人弹窗
+        closeMember() {
+            this.showMember = false;
+        },
+        // 选人确定
+        confirmMember(userIds) {
+            this.form.user_ids = userIds;
+            this.showMember = false;
+        },
+        // 关闭选人弹窗
+        closeComment() {
+            this.showComment = false;
+        },
+        // 选人确定
+        confirmComment(userIds) {
+            this.form.comment_ids = userIds;
+            this.showComment = false;
         }
     }
 }
@@ -705,9 +554,7 @@ export default {
         color: #477CFF;
     }
 }
-.pop-content {
-    padding-top: 90px;
-}
+
 /deep/ .select-member-pop {
     .van-index-anchor {
         background: #F3F4F8;
@@ -731,7 +578,7 @@ export default {
         color: #5E636E;
     }
 }
-.member-pop {
+/deep/ .member-pop {
     .member-count {
         padding-left: 40px;
         height: 90px;
@@ -743,17 +590,5 @@ export default {
         padding: 0 40px
     }
 }
-.check-all {
-    position: relative;
 
-    .van-button {
-        position: absolute;
-        top: 0;
-        left: 0;
-        height: 100%;
-        width: 100%;
-        background: none;
-        opacity: 0;
-    }
-}
 </style>
