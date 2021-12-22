@@ -18,9 +18,9 @@
             </template>
         </van-nav-bar>
         <van-tabs v-model="active" @click="tabChange" color="#477CFF" stick="true" class="tab-fixed"> 
-            <van-tab title="全部"></van-tab>
-            <van-tab title="已发布"></van-tab>
-            <van-tab title="未发布"></van-tab>
+            <!-- <van-tab title="全部"></van-tab> -->
+            <van-tab title="已发布" :name="'1'"></van-tab>
+            <van-tab title="未发布" :name="'0'"></van-tab>
         </van-tabs>
         <div class="card-list">
             <div class="card" v-for="(item) in listData" :key="item.id" @click="toDetail(item)">
@@ -74,11 +74,10 @@ export default {
     name: 'assess-list',
     data() {
       return {
-          active: 0,
+          active: 1,
           page: 1,
           per_page: 20,
           listData: [],
-          status: 0,
           actions: [
            { text: this.$t('common.view'), icon: 'orders-o', type: 'detail' }, 
            { text: this.$t('common.edit'), icon: 'edit', type: 'edit' },
@@ -94,7 +93,7 @@ export default {
             let params = {
                 per_page: this.per_page,
                 page: this.page,
-                // status: this.status
+                status: this.active
             }
             this.$api.get('/v1/examine.list', params)
             .then(res => {
@@ -106,8 +105,9 @@ export default {
         toDetail(item) {
             this.$router.push({ path: '/assess/form', query: { id: item.id, disabled: true }});
         },
-        tabChange() {
-
+        tabChange(value) {
+            // console.log(this.active);
+            this.getList();
         },
         add() {
             this.$router.push({ path: '/assess/form'});
