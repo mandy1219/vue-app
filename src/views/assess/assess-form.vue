@@ -31,7 +31,7 @@
                 v-model="form.indicator"
                 :label="$t('task.indicator')"
                 :placeholder="$t('task.indicator')"
-                @click="indicatorPicker = true"
+                @click="showPicker"
                 class="filed-picker"
                 right-icon="arrow-down"
                 :rules="[{ required: true, message: $t('common.select')+$t('task.indicator') }]"
@@ -62,9 +62,12 @@
 
             <van-field name="radio" label="考核人员" v-if="form.target" :readonly="disabled">
                 <template #input>
-                    <div class="flex flex-center w100" @click="showTargetMemberList()">
+                    <div class="flex flex-center w100" @click="showTargetMemberList()" v-if="!disabled">
                         <span class="add"><van-icon name="plus" class="mr10" />选择人员</span>
                         <span>已选 {{ form.user_ids.length }} 人</span>
+                    </div>
+                    <div v-else>
+                        <span class="flex flex-center w100">已选 {{ form.user_ids.length }} 人<van-icon name="arrow-up" color="#5E636E" size="20" /></span>
                     </div>
                     <!-- <div class="flex flex-center w100" @click="showMemberList('target')">
                         <span class="add"><van-icon name="plus" class="mr10" />选择人员</span>
@@ -90,9 +93,12 @@
             <van-field name="radio" label="评价人" v-if="form.mode == 2 || form.mode == 3">
                 <template #input>
                     <!-- <div class="add" @click="showMemberList('mode')"><van-icon name="plus" class="mr10" />选择人员</div> -->
-                    <div class="flex flex-center w100" @click="showModeMemberList()">
+                    <div class="flex flex-center w100" @click="showModeMemberList()"  v-if="!disabled">
                         <span class="add"><van-icon name="plus" class="mr10" />选择人员</span>
                         <span>已选 {{ form.comment_ids.length }} 人</span>
+                    </div>
+                    <div v-else>
+                        <span class="flex flex-center w100">已选 {{ form.comment_ids.length }} 人<van-icon name="arrow-up" color="#5E636E" size="20" /></span>
                     </div>
                 </template>
             </van-field>
@@ -117,10 +123,9 @@
                 :value="form.template"
                 :label="$t('task.template')"
                 :placeholder="$t('task.template')"
-                @click="templatePicker = true"
+                @click="showTemplatePicker"
                 class="filed-picker"
                 right-icon="arrow-down"
-                :disabled="disabled"
             />
             <van-popup v-model="templatePicker" position="bottom">
                 <van-picker
@@ -352,6 +357,18 @@ export default {
         //     this.form.indicator = selectedOptions.map((option) => option.text).join('/');
         //     this.form.indicators_id = value;
         // },
+        showPicker() {
+            if(this.disabled) {
+                return false;
+            }
+            this.indicatorPicker = true;
+        },
+        showTemplatePicker() {
+            if(this.disabled) {
+                return false;
+            }
+            this.templatePicker = true;
+        },
         // 选择模板
         changeTemplate(option) {
             this.form.template = option.title;
