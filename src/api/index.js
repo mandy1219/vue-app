@@ -12,16 +12,17 @@ Vue.use(Toast);
 // });
 
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8';
+// axios.defaults.headers.common['token'] = '123';
 
 
 axios.interceptors.request.use(function(config) {
   // 在发送请求之前做些什么
   //若token存在，则在每次请求头中加入token
-  let token = localStorage.getItem('token');
+  // let token = localStorage.getItem('token');
 
-  if (token) {
+  // if (token) {
     // config.headers['token'] = token;
-  }
+  // }
 
   return config;
   }, function(error) {
@@ -50,6 +51,7 @@ axios.interceptors.response.use(function(response) {
 })
 
 const baseURL = 'http://120.27.130.230:8080';
+Vue.prototype.$serviceUrl = baseURL;
 
 export default {
   get: function (url, params) {

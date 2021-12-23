@@ -60,6 +60,8 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
     name: 'task-list',
     data() {
@@ -70,13 +72,26 @@ export default {
             total: 0,
             listData: [],
             loading: false,
-            finished: false
+            finished: false,
+            token: ''
         };
     },
     created() {
+        this.login();
         // this.getList();
     },
     methods: {
+        login() {
+            this.$api.post('/v1/login', { user_id: '123' })
+            .then(res => {
+                if(res.error_code == '0') {
+                    this.token = res.token;
+                    this.getList();
+                } else {
+
+                }
+            });
+        },
         getList() {
             this.loading = true;
             let params = {
@@ -84,7 +99,10 @@ export default {
                 page: this.page,
                 status: this.active
             }
-            this.$api.get('/v1/examine.record.user.list', params)
+            console.log(this.$serviceUrl);
+            axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8';
+            axios.defaults.headers.common['Authorization'] = this.token;
+            axios.get(`${this.$serviceUrl}/v1/examine.record.user.list`, { params: params })
             .then(res => {
                 if(res.error_code == 0) {
                     this.listData = this.listData.concat(res.data.list);
@@ -96,6 +114,8 @@ export default {
                         this.page = this.page + 1
                     }
                     this.loading = false
+                } else {
+                    this.$toast.fail(res.error_desc);
                 }
             })
             .catch(error => {
