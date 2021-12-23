@@ -200,8 +200,8 @@
         >
             <div class="loading" v-if="loadingMember"><van-loading /></div>
             <template  v-if="!loadingMember">
-                <member-list v-if="show && form.target == 1" title="选择考核对象" :member-list="students" :user-ids="form.user_ids" @close="closeMember" @confirm="confirmMember"></member-list> 
-                <member-list v-if="show && form.target == 2" title="选择考核对象" :member-list="teachers" :user-ids="form.user_ids" @close="closeMember" @confirm="confirmMember"></member-list> 
+                <member-list v-if="show && form.target == 1" title="选择考核对象" :member-list="students" :user-ids="form.user_ids" @close="closeMember" @confirm="confirmMember" :selected-list="form.user_names"></member-list> 
+                <member-list v-if="show && form.target == 2" title="选择考核对象" :member-list="teachers" :user-ids="form.user_ids" @close="closeMember" @confirm="confirmMember" :selected-list="form.user_names"></member-list> 
             </template>
         </van-popup>
 
@@ -213,8 +213,8 @@
         >
             <div class="loading" v-if="loadingMember"><van-loading /></div>
             <template  v-if="!loadingMember">
-                <member-list v-if="show && form.mode == 2" title="选择评价人员" :member-list="students" :user-ids="form.comment_ids" @close="closeComment" @confirm="confirmComment"></member-list> 
-                <member-list v-if="show && form.mode == 3" title="选择评价人员" :member-list="teachers" :user-ids="form.comment_ids" @close="closeComment" @confirm="confirmComment"></member-list> 
+                <member-list v-if="show && form.mode == 2" title="选择评价人员" :member-list="students" :user-ids="form.comment_ids" @close="closeComment" @confirm="confirmComment" :selected-list="form.comment_names"></member-list> 
+                <member-list v-if="show && form.mode == 3" title="选择评价人员" :member-list="teachers" :user-ids="form.comment_ids" @close="closeComment" @confirm="confirmComment" :selected-list="form.comment_names"></member-list> 
             </template>
         </van-popup>
 
@@ -404,7 +404,6 @@ export default {
             .then(res => {
                 if(res.error_code == '0') {
                     this.students = res.list;
-                    // this.memberList = this.students;
                 }
             });
         },
@@ -420,7 +419,6 @@ export default {
             .then(res => {
                 if(res.error_code == '0') {
                     this.teachers = res.list;
-                    // this.memberList = this.teachers;
                 }
             });
         },
@@ -465,7 +463,7 @@ export default {
             this.show = true;
         },
         removeMember(member) {
-            console.log(member);
+            // console.log(member);
         },
         // 详情页编辑
         edit() {
@@ -474,6 +472,7 @@ export default {
         // 关闭选人弹窗
         closeMember() {
             this.showMember = false;
+             this.show = false;
         },
         // 选人确定
         confirmMember(userIds) {
@@ -483,6 +482,7 @@ export default {
         // 关闭选人弹窗
         closeComment() {
             this.showComment = false;
+            this.show = false;
         },
         // 选人确定
         confirmComment(userIds) {
@@ -603,8 +603,9 @@ export default {
         font-size: 36px;
     }
     .member-list {
-        height: 120px;
-        padding: 0 40px
+        height: 100px;
+        padding: 0 40px;
+        // border-bottom: 1px solid #ebedf0;
     }
 }
 

@@ -56,12 +56,13 @@
             class="member-pop"
             :style="{ height: '90%' }"
         >
-            <member-pop :member-list="memberList" :user-ids="users"></member-pop>
+            <member-pop v-if="showSelectedMember" :member-list="selectedMembers" :user-ids="users"></member-pop>
         </van-popup>
     </div>
 </template>
 
 <script>
+import _ from 'lodash';
 import avatar from './avatar.vue';
 import memberPop from './member-pop.vue';
 export default {
@@ -73,6 +74,10 @@ export default {
             default: ''
         },
         memberList: {
+            type: Array,
+            default: () => []
+        },
+        selectedList: {
             type: Array,
             default: () => []
         },
@@ -91,20 +96,20 @@ export default {
         };
     },
     created() {
+        this.selectedMembers = [];
         this.users = this.userIds;
-        if(this.userIds.length == this.memberList.length) {
-            this.checkAll = true;
-        } else {
-            this.checkAll = false;
-        }
+        this.checkAll = this.userIds.length == this.memberList.length ? true : false;
+        this.selectedMembers = _.cloneDeep(this.selectedList);
         this.showSelectedMember = false;
-        console.log(this.userIds);
+        // console.log(this.selectedList);
     },
     methods: {
         close() {
+            this.showSelectedMember = false;
             this.$emit('close');
         },
         confirm() {
+            this.showSelectedMember = false;
             this.$emit('confirm', this.users);
         },
         // 成员全选
@@ -123,8 +128,10 @@ export default {
         toggle(index, member) {
             this.$refs.checkboxes[index].toggle(); // 切换每个checkbox状态
             if(this.$refs.checkboxes[index].checked) {
-                let index = _.findIndex(this.selectedMembers, function(o) { return o.id == member.id; });
-                this.selectedMembers.splice(index, 1);
+                let _index = _.findIndex(this.selectedMembers, function(o) { return o.user_id == member.user_id; });
+                if(_index != -1) {
+                    this.selectedMembers.splice(_index, 1);
+                }
             } else {
                 this.selectedMembers.push(member);
             }
@@ -141,7 +148,7 @@ export default {
 </script>
 <style lang='less' scoped>
 .pop-content {
-    padding-top: 90px;
+    padding: 90px 0 120px;
 }
 .check-all {
     position: relative;

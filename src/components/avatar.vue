@@ -1,11 +1,12 @@
 <template>
     <div class="flex flex-center avatar">
-        <van-image
+        <!-- <van-image
             round
             :width="size"
             :height="size"
             :src="src"
-        />
+        /> -->
+        <van-icon name="manager" color="#ccc" size="22" />
         <div class="info">
             <p v-if="name" class="name">{{ name }}</p>
             <p v-if="description" class="description">{{ description }}</p>
