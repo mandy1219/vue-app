@@ -1,7 +1,7 @@
 <template>
     <div>
         <van-nav-bar
-            title="我的任务"
+            title="考核结果"
             left-arrow
             @click-left="$back"
             :safe-area-inset-top="true"
@@ -14,10 +14,10 @@
         </van-nav-bar>
         <van-tabs v-model="active" @click="onClick" color="#477CFF" class="tab-fixed">
             <!-- <van-tab title="全部"></van-tab> -->
-            <van-tab title="待提交" :name="'1'"></van-tab>
-            <van-tab title="待评价" :name="'2'"></van-tab>
-            <van-tab title="已评价" :name="'3'"></van-tab>
-            <van-tab title="被质疑" :name="'4'"></van-tab>
+            <van-tab title="待提交" :name="'0'"></van-tab>
+            <van-tab title="待评价" :name="'1'"></van-tab>
+            <van-tab title="已评价" :name="'2'"></van-tab>
+            <van-tab title="被质疑" :name="'3'"></van-tab>
         </van-tabs>
         <van-list
             v-if="listData.length"
@@ -39,16 +39,27 @@
                             <span class="mr20">
                                 指标:<i class="text">{{ item.indicators_title }}</i>
                             </span>
-                            <!-- <span>
-                                模板:<i class="text">{{ item.template_title }}</i>
-                            </span> -->
+                            <span>
+                                被考核人:<i class="text">{{ item.user_name }}</i>
+                            </span>
+                            <span v-if="active == 2">
+                                分数:<i class="text">{{ item.score }}</i>
+                            </span>
                         </div>
                     </div>
                     <div class="card-handle flex flex-center">
                         <span class="time">{{ item.created_at }}</span>
-                        <span class="arrow">
-                            详情<van-icon name="arrow" />
-                        </span>
+                        <div class="flex">
+                            <van-icon name="ellipsis" size="22" @click.stop="showPop(item)" />
+                            <van-popover
+                                v-model="item.showPop"
+                                trigger="click"
+                                placement="left"
+                                :actions="actions"
+                                @select="onSelect($event, item)"
+                            >
+                            </van-popover>
+                        </div>
                     </div>
                 </div>
             </template>
@@ -62,35 +73,24 @@
 <script>
 import axios from 'axios';
 export default {
-    name: 'task-list',
+    name: 'record-list',
     data() {
         return {
-            active: 1,
+            active: 0,
             page: 1,
-            per_page: 10,
+            per_page: 20,
             total: 0,
             listData: [],
             loading: false,
             finished: false,
-            token: ''
+            token: '',
+            actions: [],
         };
     },
     created() {
-        this.login();
-        // this.getList();
+        this.getList();
     },
     methods: {
-        login() {
-            this.$api.post('/v1/login', { user_id: '3143688' })
-            .then(res => {
-                if(res.error_code == '0') {
-                    this.token = res.token;
-                    this.getList();
-                } else {
-
-                }
-            });
-        },
         getList() {
             this.loading = true;
             let params = {
@@ -98,9 +98,7 @@ export default {
                 page: this.page,
                 status: this.active
             }
-            axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8';
-            axios.defaults.headers.common['Authorization'] = this.token;
-            axios.get(`${this.$serviceUrl}/v1/examine.record.user.list`, { params: params })
+            this.$api.get(`/v1/examine.record.list`, params)
             .then(res => {
                 if(res.error_code == 0) {
                     this.listData = this.listData.concat(res.data.list);
@@ -122,7 +120,7 @@ export default {
             
         },
         toDetail(item) {
-            this.$router.push({ path: '/task/form', query: { id: item.id, disabled: item.status == 0 || item.status == 3 ? 1 : 2 }});
+            this.$router.push({ path: '/record/form', query: { id: item.id, disabled: true }});
         },
         onClick() {
             this.page = 1;
@@ -134,6 +132,38 @@ export default {
         },
         add() {
             this.$router.push({ path: '/assess/form'});
+        },
+        onSelect(event, item) {
+            switch(event.type) {
+                case 'evaluation': // 评价
+                    this.$router.push({ path: '/record/form', query: { id: item.id, disabled: true, handle: 1 }});
+                    break;
+                case 'question': // 质疑
+                    this.$router.push({ path: '/record/form', query: { id: item.id, disabled: true, handle: 2 }});
+                    break;
+                default:
+                    this.$router.push({ path: '/record/form', query: { id: item.id, disabled: true }});
+                    break;
+            }
+        },
+        showPop(item) {
+            if(item.status == 1) {
+                this.actions = [
+                    { text: this.$t('common.view'), icon: 'orders-o', type: 'detail' },
+                    { text: this.$t('common.evaluation'), icon: 'edit', type: 'evaluation' },
+                    { text: this.$t('common.question'), icon: 'exchange', type: 'question' }
+                ];
+            } else if(item.status == 2){
+                this.actions = [
+                    { text: this.$t('common.view'), icon: 'orders-o', type: 'detail' },
+                    { text: this.$t('common.question'), icon: 'exchange', type: 'question' }
+                ];
+            } else {
+                this.actions = [
+                    { text: this.$t('common.view'), icon: 'orders-o', type: 'detail' }
+                ];
+            }
+            item.showPop = true;
         }
     }
 }

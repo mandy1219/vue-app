@@ -86,6 +86,8 @@ module.exports = {
       'addValue': '添加值',
       'is': '是',
       'no': '否',
-      'submit': '提交'
+      'submit': '提交',
+      'question': '质疑',
+      'evaluation': '评价'
     }
 }

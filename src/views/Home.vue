@@ -25,20 +25,24 @@ export default {
           path: 'indicator/router'
         },
         {
-          name: '评价管理',
+          name: '评价工具管理',
           path: 'template/list'
         },
-        {
-          name: '物资管理',
-          path: 'material/list'
-        },
-        {
-          name: '房间管理',
-          path: 'room/list'
-        },
+        // {
+        //   name: '物资管理',
+        //   path: 'material/list'
+        // },
+        // {
+        //   name: '房间管理',
+        //   path: 'room/list'
+        // },
         {
           name: '我的任务',
           path: 'task/list'
+        },
+        {
+          name: '考核结果管理',
+          path: 'record/list'
         },
       ]
     }

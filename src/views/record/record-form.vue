@@ -12,6 +12,15 @@
                <van-icon name="arrow-left" size="22" color="#060C19" />
             </template>
         </van-nav-bar>
+        <van-form class="form" v-if="!loading">
+            <van-field
+                readonly
+                v-model="detail.user_name"
+                :name="detail.user_name"
+                label="被考核人"
+            >
+            </van-field>
+        </van-form>
         <van-form @submit="onSubmit" class="form" v-if="!loading">
             <div v-for="(field, index) in form" :key="index">
                 <template v-if="field.type == 'text'">
@@ -80,7 +89,7 @@
                 </template>
                 <template v-if="field.type == 'select'">
                     <van-field
-                        readonly
+                        :readonly="disabled"
                         clickable
                         :name="field.type"
                         :label="field.label"
@@ -111,12 +120,11 @@
                 </template>
                 <template v-if="field.type == 'editor'">
                     <van-field
-                        :readonly="disabled"
                         rows="2"
                         autosize
+                        :readonly="disabled"
                         :name="field.type"
                         :label="field.label"
-                        v-model="field.value[0]"
                         type="textarea"
                         :placeholder="field.label"
                         :rules="[{ required: field.is_require == '1' ? true : false, message: '请填写用户名' }]"
@@ -151,10 +159,11 @@
                             <van-uploader
                                 v-model="field.files"
                                 :disabled="disabled"
+                                :deletable="!disabled"
                                 :after-read="afterReadFile(field)"
                                 accept=".jpg, .jpeg, .png, .xlsx, .txt, .docx, .pdf, .doc, .xls "
                             >
-                                <van-button icon="plus" class="van-uploader__upload"></van-button>
+                                <van-button icon="plus" class="van-uploader__upload" :disabled="disabled"></van-button>
                                 <!-- <div class="van-uploader__upload">
                                     <van-icon name="plus"></van-icon>{{ $t('template.uploadFile') }}
                                 </div> -->
@@ -178,81 +187,127 @@
                             </div>
                         </template>
                         <template #input>
-                            <van-uploader v-model="field.files" :disabled="disabled" :after-read="afterReadFile(field)" />
+                            <van-uploader v-model="field.files" :disabled="disabled" :deletable="!disabled" :after-read="afterReadFile(field)" />
                         </template>
                     </van-field>
                 </template>
             </div>
+        </van-form>
 
-            <div style="margin: 30px 20px" v-if="!disabled">
-                <van-button round block type="info" native-type="submit" :loading="saving" :loading-text="$t('common.loading')">
-                    {{ detail.status == 3 ? '重新提交' : '提交' }}
-                </van-button>
+        <!-- 查看评价和质疑 -->
+        <template>
+            <div style="margin: 30px 0" v-if="detail.status == 3 && detail.doubt.length">
+                <van-form class="form">
+                    <van-field
+                        readonly
+                        v-for="(item, index) in detail.doubt"
+                        :key="index"
+                        v-model="item.content"
+                        name="质疑内容"
+                        label="质疑内容"
+                        rows="2"
+                        autosize
+                        type="textarea"
+                        placeholder="质疑内容"
+                    />
+                </van-form>
             </div>
 
-            <!-- 查看评价和质疑 -->
-            <template v-if="detail.status == 2 && detail.comments.length">
-                <div style="margin: 30px 0">
-                    <van-form class="form">
-                        <div v-for="(item, index) in detail.comments" :key="index">
-                            <van-field
-                                readonly
-                                v-model="item.content"
-                                name="评价内容"
-                                label="评价内容"
-                                rows="2"
-                                autosize
-                                type="textarea"
-                                placeholder="评价内容"
-                            />
-                            <van-field 
-                                readonly
-                                v-model="item.score" 
-                                type="number"
-                                label="分数"
-                                placeholder="分数"
-                            />
-                            </div>
-                    </van-form>
-                </div>
-            </template>
-            
-            <template v-if="detail.status == 1">
-                <!-- 评价 -->
-                <div style="margin: 30px 0">
-                    <van-form class="form">
+            <div style="margin: 30px 0" v-if="detail.status == 2 && detail.comments.length">
+                <van-form class="form">
+                    <div v-for="(item, index) in detail.comments" :key="index">
                         <van-field
-                            v-model="newForm.content"
+                            readonly
+                            v-model="item.content"
                             name="评价内容"
                             label="评价内容"
                             rows="2"
                             autosize
                             type="textarea"
                             placeholder="评价内容"
-                        >
-                        </van-field>
+                        />
                         <van-field 
-                            v-model="newForm.score" 
+                            readonly
+                            v-model="item.score" 
                             type="number"
                             label="分数"
                             placeholder="分数"
-                        >
-                            <template #label>
-                                <div class="flex flex-center">
-                                    <span class="flex flex-center">
-                                        <i class="required">*</i>
-                                        分数
-                                    </span>
-                                </div>
-                            </template>
-                        </van-field>
-                    </van-form>
-                    <div style="margin: 30px">
-                        <van-button round block type="info" native-type="button" :disabled="saving" @click="submitForm(1)">提交评价</van-button>
-                    </div>
+                        />
+                        </div>
+                </van-form>
+            </div>
+        </template>
+
+        <!-- 提交评价和质疑 -->
+        <template>
+            <!-- 评价 -->
+            <div style="margin: 30px 0" v-if="handle == 1">
+                <van-form class="form">
+                    <van-field
+                        v-model="newForm.content"
+                        name="评价内容"
+                        label="评价内容"
+                        rows="2"
+                        autosize
+                        type="textarea"
+                        placeholder="评价内容"
+                    >
+                    </van-field>
+                    <van-field 
+                        v-model="newForm.score" 
+                        type="number"
+                        label="分数"
+                        placeholder="分数"
+                    >
+                        <template #label>
+                            <div class="flex flex-center">
+                                <span class="flex flex-center">
+                                    <i class="required">*</i>
+                                    分数
+                                </span>
+                            </div>
+                        </template>
+                    </van-field>
+                </van-form>
+                <div style="margin: 30px">
+                    <van-button round block type="info" native-type="button" :disabled="saving" @click="submitForm(1)">提交评价</van-button>
                 </div>
-            </template>
-        </van-form>
+            </div>
+
+            <!-- 质疑 -->
+            <div style="margin: 30px 0" v-if="handle == 2">
+                <van-form class="form">
+                    <van-field
+                        v-model="newForm.content"
+                        name="质疑内容"
+                        label="质疑内容"
+                        rows="2"
+                        autosize
+                        type="textarea"
+                        placeholder="质疑内容"
+                    >
+                        <template #label>
+                            <div class="flex flex-center">
+                                <span class="flex flex-center">
+                                    <i class="required">*</i>
+                                    质疑内容
+                                </span>
+                            </div>
+                        </template>
+                    </van-field>
+                </van-form>
+                <div style="margin: 30px">
+                    <van-button round block type="info" native-type="button" :disabled="saving" @click="submitForm(2)">提交质疑</van-button>
+                </div>
+            </div>
+        </template>
+
+        <div style="margin: 16px;" v-if="disabled && !handle">
+            <div class="flex flex-center">
+                <van-button v-if="detail.status == 1" round block plain type="info" @click="handle = 1" native-type="button">去评价</van-button>
+                <van-button v-if="detail.status == 1 || detail.status == 2" round block plain type="info" class="ml20" @click="handle = 2" native-type="button">去质疑</van-button>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -277,11 +332,14 @@ export default {
                 content: '',
                 score: ''
             },
+            question: '',
+            handle: null
         };
     },
     created() {
         this.taskId = this.$route.query.id;
-        this.disabled = this.$route.query.disabled == 2 ? true : false;
+        this.disabled = this.$route.query.disabled ? true : false;
+        this.handle = this.$route.query.handle ? this.$route.query.handle : null;
         if(this.taskId) {
             this.$api.get('/v1/examine.record.detail', { id: this.taskId })
             .finally(() => {
@@ -290,47 +348,23 @@ export default {
             .then(res => {
                 if(res.error_code == '0') {
                     this.detail = res.data;
-                    this.form = this.detail.status == 0 ? res.data.template.form : res.data.form;
+                    this.form = res.data.status == 0 ? res.data.template.form : res.data.form;
                     this.form.forEach(item => {
-                        if(!item.value) {
-                            item.value = [];
+                        if((item.type == 'file' || item.type == 'img') && item.value.length) {
+                            item.files = [];
+                            item.value.forEach(file => {
+                                let obj = {};
+                                obj.url = file;
+                                item.files.push(obj);
+                            })
                         }
                     })
-                    // this.form = res.data.form;
                 }
             });
         }
     },
     methods: {
         onSubmit(){
-            this.saving = true;
-            let form = _.cloneDeep(this.form);
-            form.forEach(item => {
-                if(item.type == 'file' || item.type == 'img') {
-                    if(item.files && item.files.length) {
-                        item.files.forEach(file => {
-                            item.value.push(file.url);
-                        })
-                        delete item.files;
-                    }
-                }
-            })
-            
-            this.$api.post('/v1/examine.record.create', {
-                id: this.taskId,
-                form: form
-            })
-            .finally(() => {
-                this.saving = false;
-            })
-            .then(res => {
-                if(res.error_code == '0') {
-                    this.$toast.success(this.$t('common.submit')+this.$t('common.success'));
-                    this.$back();
-                } else {
-                    this.$toast.fail(res.error_code);
-                }
-            })
         },
         // 点击问号显示tips
         showTips(field) {
@@ -359,13 +393,24 @@ export default {
             field.value.push(event.key);
             this.showPicker = false;
         },
-        submitForm() {
-            if(!this.newForm.score) {
-                this.$toast.fail('请输入分数');
-                return false;
+        submitForm(type) {
+            let url = '';
+            // 1评价 2质疑
+            if(type == 1) {
+                if(!this.newForm.score) {
+                    this.$toast.fail('请输入分数');
+                    return false;
+                }
+                url = '/v1/examine.comment';
+            } else {
+                if(!this.newForm.content) {
+                    this.$toast.fail('请输入内容');
+                    return false;
+                }
+                url = '/v1/examine.doubt';
             }
             this.saving = true;
-            this.$api.post('/v1/examine.comment', {
+            this.$api.post(url, {
                 id: this.taskId,
                 ...this.newForm
             })
@@ -374,7 +419,7 @@ export default {
             })
             .then(res => {
                 if(res.error_code == '0') {
-                    this.$toast.success('评价成功');
+                    this.$toast.success('成功');
                     this.$back();
                 }
             })

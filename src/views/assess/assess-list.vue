@@ -73,17 +73,17 @@
 export default {
     name: 'assess-list',
     data() {
-      return {
-          active: 1,
-          page: 1,
-          per_page: 20,
-          listData: [],
-          actions: [
-           { text: this.$t('common.view'), icon: 'orders-o', type: 'detail' }, 
-           { text: this.$t('common.edit'), icon: 'edit', type: 'edit' },
-           { text: this.$t('common.delete'), icon: 'delete-o', type: 'delete' }
-        ],
-      };
+        return {
+            active: 1,
+            page: 1,
+            per_page: 20,
+            listData: [],
+            actions: [
+                { text: this.$t('common.view'), icon: 'orders-o', type: 'detail' }, 
+                { text: this.$t('common.edit'), icon: 'edit', type: 'edit' },
+                { text: this.$t('common.delete'), icon: 'delete-o', type: 'delete' }
+            ],
+        };
     },
     created() {
         this.getList();

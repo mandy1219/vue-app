@@ -29,6 +29,10 @@ import RoomIndex from '../views/room/index.vue';
 import RoomList from '../views/room/room-list.vue';
 import RoomForm from '../views/room/room-form.vue';
 
+import RecordIndex from '../views/record/index.vue';
+import RecordList from '../views/record/record-list.vue';
+import RecordForm from '../views/record/record-form.vue';
+
 Vue.use(VueRouter)
 
 const routes = [
@@ -161,6 +165,23 @@ const routes = [
         path: 'form',
         name: 'room-form',
         component: RoomForm
+      }
+    ]
+  },
+  {
+    path: '/record',
+    name: 'record',
+    component: RecordIndex,
+    children: [
+      {
+        path: 'list',
+        name: 'record-list',
+        component: RecordList
+      },
+      {
+        path: 'form',
+        name: 'record-form',
+        component: RecordForm
       }
     ]
   },
