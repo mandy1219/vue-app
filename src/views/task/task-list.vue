@@ -61,7 +61,6 @@
 
 <script>
 import axios from 'axios';
-
 export default {
     name: 'task-list',
     data() {
@@ -82,7 +81,7 @@ export default {
     },
     methods: {
         login() {
-            this.$api.post('/v1/login', { user_id: '123' })
+            this.$api.post('/v1/login', { user_id: '3143688' })
             .then(res => {
                 if(res.error_code == '0') {
                     this.token = res.token;
@@ -124,7 +123,7 @@ export default {
             
         },
         toDetail(item) {
-            this.$router.push({ path: '/assess/form', query: { id: item.id }});
+            this.$router.push({ path: '/task/form', query: { id: item.id }});
         },
         onClick() {
             this.page = 1;
