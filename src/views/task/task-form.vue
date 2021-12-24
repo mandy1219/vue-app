@@ -115,7 +115,7 @@
                         autosize
                         :name="field.type"
                         :label="field.label"
-                        :value="field.text"
+                        v-model="field.value[0]"
                         type="textarea"
                         :placeholder="field.label"
                         :rules="[{ required: field.is_require == '1' ? true : false, message: '请填写用户名' }]"
