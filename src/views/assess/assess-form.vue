@@ -25,7 +25,7 @@
             />
             <van-field
                 v-if="!loading"
-                :readonly="disabled"
+                readonly
                 clickable
                 name="选择指标"
                 v-model="form.indicator"
