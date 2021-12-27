@@ -23,15 +23,15 @@
                         :placeholder="field.label"
                         :rules="[{ required: field.is_require == '1' ? true : false, message: '请填写用户名' }]"
                     >
-                    <template #label>
-                        <div class="flex flex-center">
-                            <span class="flex flex-center">
-                                <i class="required" v-if="field.is_require == '1'">*</i>
-                                {{ field.label }}
-                                <van-icon v-if="field.tip" name="question" class="ml10" color="#ccc" @click="showTips(field)" />
-                            </span>
-                        </div>
-                    </template>
+                        <template #label>
+                            <div class="flex flex-center">
+                                <span class="flex flex-center">
+                                    <i class="required" v-if="field.is_require == '1'">*</i>
+                                    {{ field.label }}
+                                    <van-icon v-if="field.tip" name="question" class="ml10" color="#ccc" @click="showTips(field)" />
+                                </span>
+                            </div>
+                        </template>
                     </van-field>
                 </template>
                 <template v-if="field.type == 'radio'">
@@ -83,10 +83,9 @@
                         readonly
                         clickable
                         :name="field.type"
-                        :label="field.label"
                         :value="field.text"
                         :placeholder="field.label"
-                        @click="showPicker = true"
+                        @click="field.showPicker = true"
                         :rules="[{ required: field.is_require == '1' ? true : false, message: '请填写用户名' }]"
                     >
                         <template #label>
@@ -99,13 +98,13 @@
                             </div>
                         </template>
                     </van-field>
-                    <van-popup v-model="showPicker" position="bottom">
+                    <van-popup v-model="field.showPicker" position="bottom">
                         <van-picker
                             show-toolbar
                             value-key="value"
                             :columns="field.options"
                             @confirm="pickerConfirm($event, field)"
-                            @cancel="showPicker = false"
+                            @cancel="field.showPicker = false"
                         />
                     </van-popup>
                 </template>
@@ -273,7 +272,6 @@ export default {
             detail: {},
             form: [],
             saving: false,
-            showPicker: false,
             uploader: [],
 			uploaderImg: [],
             newForm: {
@@ -293,11 +291,10 @@ export default {
             .then(res => {
                 if(res.error_code == '0') {
                     this.detail = res.data;
+                    // status 0 是待提交任务，其他是未提交的任务
                     this.form = this.detail.status == 0 ? res.data.template.form : res.data.form;
                     this.form.forEach(item => {
-                        // if(!item.value) {
-                        //     item.value = [];
-                        // }
+                        // 上传文件的回显files
                         if((item.type == 'file' || item.type == 'img') && item.value.length) {
                             item.files = [];
                             item.value.forEach(file => {
@@ -305,6 +302,10 @@ export default {
                                 obj.url = file;
                                 item.files.push(obj);
                             })
+                        }
+                        if(item.type == 'select') {
+                            // 处理多个picker
+                            this.$set(item, 'showPicker', false);
                         }
                     })
                 }
@@ -323,6 +324,9 @@ export default {
                         })
                         delete item.files;
                     }
+                }
+                if(item.type == 'select') {
+                    delete item.showPicker;
                 }
             })
             
@@ -346,6 +350,7 @@ export default {
         showTips(field) {
             this.$toast(field.tip);
         },
+        // 上传
         afterReadFile(field) {
             return file => {
                 let formData = new FormData();
@@ -359,16 +364,17 @@ export default {
                 })
             }
         },
-        afterReadImg(file) {
-            // console.log(file);
-            // console.log(this.form);
-        },
+        // 下拉选择确认
         pickerConfirm(event, field) {
             // console.log(event);
+            if(this.disabled) {
+                return false;
+            }
             field.text = event.value;
             field.value.push(event.key);
-            this.showPicker = false;
+            field.showPicker = false;
         },
+        // 提交评价
         submitForm() {
             if(!this.newForm.score) {
                 this.$toast.fail('请输入分数');
@@ -388,7 +394,7 @@ export default {
                     this.$back();
                 }
             })
-        }
+        },
     }
 }
 

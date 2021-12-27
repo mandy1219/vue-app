@@ -78,7 +78,7 @@ export default {
     },
     methods: {
         login() {
-            this.$api.post('/v1/login', { user_id: '3143688' })
+            this.$api.post('/v1/login', { user_id: '3143669' })
             .then(res => {
                 if(res.error_code == '0') {
                     this.token = res.token;

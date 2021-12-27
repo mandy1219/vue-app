@@ -33,7 +33,6 @@
             <template v-if="field.type == 'text'">
               <van-field
                 :readonly="disabled"
-                v-model="field.value"
                 :name="field.type"
                 :label="field.label"
                 :placeholder="field.label"
@@ -88,7 +87,7 @@
                   </div>
                 </template>
                 <template #input>
-                  <van-radio-group v-model="field.value" direction="horizontal" :disabled="disabled">
+                  <van-radio-group direction="horizontal" :disabled="disabled">
                     <van-radio :name="radio.key" v-for="radio in field.options" :key="radio.value">{{ radio.value }}</van-radio>
                   </van-radio-group>
                 </template>
@@ -131,7 +130,6 @@
                 clickable
                 :name="field.type"
                 :label="field.label"
-                :value="field.value"
                 :placeholder="field.label"
                 @click="showFieldPicker = true"
               >
@@ -169,7 +167,6 @@
             <template v-if="field.type == 'editor'">
               <van-field
                 :readonly="disabled"
-                v-model="field.value"
                 rows="2"
                 autosize
                 :name="field.type"
@@ -353,7 +350,8 @@
 
 
             <div style="margin: 16px;">
-              <van-button round block type="info" native-type="submit">{{ $t('common.confirm') }}</van-button>
+              <van-button round block type="info" native-type="
+              ">{{ $t('common.confirm') }}</van-button>
             </div>
           </van-form>
         </div>
@@ -370,7 +368,7 @@ const format = {
   score: '',
   options: [null],
   tip: '',
-  is_require: 1
+  is_require: 1,
 };
 import _ from 'lodash';
 import { mapState, mapGetters } from 'vuex';
@@ -522,8 +520,10 @@ export default {
           })
         }
         delete form.value;
+        form.value = [];
+        // console.log(form);
         // add or edit
-        if(form.id) {
+        if(form.id || form.id === 0) {
           this.$set(this.templateForm.form, form.id, form); // edit
         } else {
           this.templateForm.form.push(form); // add
