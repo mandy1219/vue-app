@@ -28,33 +28,30 @@
             class="card-list"
             :offset="'0'"
         >
-            <template v-if="listData.length">
-                <div class="card" v-for="(item) in listData" :key="item.id" @click="toDetail(item)">
-                    <div class="card-info">
-                        <div class="flex flex-center">
-                            <p class="title ellipsis">{{ item.examine_title }}</p>
-                            <div class="flex"><van-tag round type="primary">{{ item.status_m }}</van-tag></div>
-                        </div>
-                        <div class="content">
-                            <span class="mr20">
-                                指标:<i class="text">{{ item.indicators_title }}</i>
-                            </span>
-                            <!-- <span>
-                                模板:<i class="text">{{ item.template_title }}</i>
-                            </span> -->
-                        </div>
+            <div class="card" v-for="(item) in listData" :key="item.id" @click="toDetail(item)">
+                <div class="card-info">
+                    <div class="flex flex-center">
+                        <p class="title ellipsis">{{ item.examine_title }}</p>
+                        <div class="flex"><van-tag round type="primary">{{ item.status_m }}</van-tag></div>
                     </div>
-                    <div class="card-handle flex flex-center">
-                        <span class="time">{{ item.created_at }}</span>
-                        <span class="arrow">
-                            详情<van-icon name="arrow" />
+                    <div class="content">
+                        <span class="mr20">
+                            指标:<i class="text">{{ item.indicators_title }}</i>
                         </span>
+                        <!-- <span>
+                            模板:<i class="text">{{ item.template_title }}</i>
+                        </span> -->
                     </div>
                 </div>
-            </template>
-            
+                <div class="card-handle flex flex-center">
+                    <span class="time">{{ item.created_at }}</span>
+                    <span class="arrow">
+                        详情<van-icon name="arrow" />
+                    </span>
+                </div>
+            </div>
         </van-list>
-        <van-empty v-else description="暂无数据" />
+        <van-empty v-if="!loading && !listData.length" description="暂无数据" />
         <router-view></router-view>
     </div>
 </template>

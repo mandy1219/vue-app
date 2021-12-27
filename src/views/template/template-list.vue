@@ -14,13 +14,14 @@
               <van-icon name="arrow-left" size="22" color="#060C19" />
           </template>
         </van-nav-bar>
-      <!-- <div class="card-list"> -->
         <van-list
+            v-if="listData.length"
             v-model="loading"
             :finished="finished"
             finished-text="没有更多了"
             @load="getList"
             class="card-list"
+            :offset="'0'"
         >
             <div class="card" v-for="(item) in listData" :key="item.id" @click="edit($event, item)">
                 <div class="card-info">
@@ -48,7 +49,7 @@
                 </div>
             </div>
         </van-list>
-    <!-- </div> -->
+        <van-empty v-if="!loading && !listData.length" description="暂无数据" />
     </div>
 </template>
 
@@ -74,7 +75,7 @@ export default {
       };
     },
     created() {
-        // this.getList();
+        this.getList();
     },
     methods: {
         getList() {
@@ -90,18 +91,18 @@ export default {
                 if(res.error_code == 0) {
                     this.listData = this.listData.concat(res.data.list);
                     this.total = res.data.paginate.total;
-                    this.loading = false;
+                    if (this.listData.length >= this.total) {
+                        this.finished = true;
+                    } else {
+                        this.finished = false;
+                        this.page = this.page + 1
+                    }
+                    this.loading = false
+                } else {
+                    this.$toast.fail(res.error_desc);
                 }
             })
         },
-        // load(){
-        //     if (this.listData.length >= this.total) {
-        //         this.finished = true;
-        //     }
-        //     this.page = this.page + 1;
-        //     this.getList();
-        // },
-        toDetail(item) {},
         add() {
             this.$router.push('/template/form');
         },
@@ -144,6 +145,12 @@ export default {
 
 </script>
 <style lang='less' scoped>
+/deep/ .tab-fixed {
+    position: fixed !important;
+    width: 100%;
+    background: #fff;
+    z-index: 1;
+}
 .card-list {
     padding: 20px 0;
     .card {

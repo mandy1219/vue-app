@@ -32,7 +32,7 @@
           <div v-for="(field, index) in templateForm.form" :key="index">
             <template v-if="field.type == 'text'">
               <van-field
-                readonly
+                :readonly="disabled"
                 v-model="field.value"
                 :name="field.type"
                 :label="field.label"
@@ -54,7 +54,7 @@
                         @select="editElement($event, field, index)"
                       >
                         <template #reference>
-                          <van-icon name="ellipsis" size="16" color="#323842" />
+                          <van-icon name="ellipsis" size="18" color="#323842" />
                         </template>
                       </van-popover>
                     </div>
@@ -81,7 +81,7 @@
                         @select="editElement($event, field, index)"
                       >
                         <template #reference>
-                          <van-icon name="ellipsis" size="16" color="#323842" />
+                          <van-icon name="ellipsis" size="18" color="#323842" />
                         </template>
                       </van-popover>
                     </div>
@@ -112,7 +112,7 @@
                         @select="editElement($event, field, index)"
                       >
                         <template #reference>
-                          <van-icon name="ellipsis" size="16" color="#323842" />
+                          <van-icon name="ellipsis" size="18" color="#323842" />
                         </template>
                       </van-popover>
                     </div>
@@ -143,7 +143,7 @@
                       <van-icon v-if="field.tip" name="question" class="ml10" color="#ccc" @click.stop="showTips(field)" />
                     </span>
                     <div class="flex" v-if="!disabled" @click.stop="field.showPop = true">
-											<van-icon name="ellipsis" size="16" color="#323842" />
+											<van-icon name="ellipsis" size="18" color="#323842" />
                       <van-popover
                         v-model="field.showPop"
                         trigger="click"
@@ -168,13 +168,14 @@
             </template>
             <template v-if="field.type == 'editor'">
               <van-field
-                  v-model="field.value"
-                  rows="2"
-                  autosize
-                  :name="field.type"
-                  :label="field.label"
-                  type="textarea"
-                  :placeholder="field.label"
+                :readonly="disabled"
+                v-model="field.value"
+                rows="2"
+                autosize
+                :name="field.type"
+                :label="field.label"
+                type="textarea"
+                :placeholder="field.label"
               >
                 <template #label>
                   <div class="flex flex-center">
@@ -192,7 +193,7 @@
                         @select="editElement($event, field, index)"
                       >
                         <template #reference>
-                          <van-icon name="ellipsis" size="16" color="#323842" />
+                          <van-icon name="ellipsis" size="18" color="#323842" />
                         </template>
                       </van-popover>
                     </div>
@@ -219,7 +220,7 @@
                         @select="editElement($event, field, index)"
                       >
                         <template #reference>
-                          <van-icon name="ellipsis" size="16" color="#323842" />
+                          <van-icon name="ellipsis" size="18" color="#323842" />
                         </template>
                       </van-popover>
                     </div>
@@ -251,7 +252,7 @@
                         @select="editElement($event, field, index)"
                       >
                         <template #reference>
-                          <van-icon name="ellipsis" size="16" color="#323842" />
+                          <van-icon name="ellipsis" size="18" color="#323842" />
                         </template>
                       </van-popover>
                     </div>

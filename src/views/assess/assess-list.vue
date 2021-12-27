@@ -22,7 +22,16 @@
             <van-tab title="已发布" :name="'1'"></van-tab>
             <van-tab title="未发布" :name="'0'"></van-tab>
         </van-tabs>
-        <div class="card-list">
+
+         <van-list
+            v-if="listData.length"
+            v-model="loading"
+            :finished="finished"
+            finished-text="没有更多了"
+            @load="getList"
+            class="card-list"
+            :offset="'0'"
+        >
             <div class="card" v-for="(item) in listData" :key="item.id" @click="toDetail(item)">
                 <div class="card-info">
                     <div class="flex flex-center">
@@ -64,7 +73,9 @@
                     </div>
                 </div>
             </div>
-        </div>
+         </van-list>
+
+        <van-empty v-if="!loading && !listData.length" description="暂无数据" />
         <router-view></router-view>
     </div>
 </template>
@@ -75,6 +86,8 @@ export default {
     data() {
         return {
             active: 1,
+            loading: false,
+            finished: false,
             page: 1,
             per_page: 20,
             listData: [],
@@ -90,6 +103,7 @@ export default {
     },
     methods: {
         getList() {
+            this.loading = true;
             let params = {
                 per_page: this.per_page,
                 page: this.page,
@@ -98,8 +112,21 @@ export default {
             this.$api.get('/v1/examine.list', params)
             .then(res => {
                 if(res.error_code == 0) {
-                    this.listData = res.data.list;
+                    this.listData = this.listData.concat(res.data.list);
+                    this.total = res.data.paginate.total;
+                    if (this.listData.length >= this.total) {
+                        this.finished = true;
+                    } else {
+                        this.finished = false;
+                        this.page = this.page + 1
+                    }
+                    this.loading = false
+                } else {
+                    this.$toast.fail(res.error_desc);
                 }
+            })
+            .catch(error => {
+                this.$toast('请求错误');
             })
         },
         toDetail(item) {
@@ -107,6 +134,8 @@ export default {
         },
         tabChange(value) {
             // console.log(this.active);
+            this.page = 1;
+            this.listData = [];
             this.getList();
         },
         add() {

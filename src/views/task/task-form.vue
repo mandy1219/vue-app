@@ -151,13 +151,11 @@
                             <van-uploader
                                 v-model="field.files"
                                 :disabled="disabled"
+                                :deletable="!disabled"
                                 :after-read="afterReadFile(field)"
                                 accept=".jpg, .jpeg, .png, .xlsx, .txt, .docx, .pdf, .doc, .xls "
                             >
-                                <van-button icon="plus" class="van-uploader__upload"></van-button>
-                                <!-- <div class="van-uploader__upload">
-                                    <van-icon name="plus"></van-icon>{{ $t('template.uploadFile') }}
-                                </div> -->
+                                <van-button icon="plus" class="van-uploader__upload" native-type="button"></van-button>
                             </van-uploader>
                         </template>
                     </van-field>
@@ -178,7 +176,12 @@
                             </div>
                         </template>
                         <template #input>
-                            <van-uploader v-model="field.files" :disabled="disabled" :after-read="afterReadFile(field)" />
+                            <van-uploader
+                                v-model="field.files"
+                                :disabled="disabled"
+                                :deletable="!disabled"
+                                :after-read="afterReadFile(field)" 
+                            />
                         </template>
                     </van-field>
                 </template>
@@ -292,11 +295,18 @@ export default {
                     this.detail = res.data;
                     this.form = this.detail.status == 0 ? res.data.template.form : res.data.form;
                     this.form.forEach(item => {
-                        if(!item.value) {
-                            item.value = [];
+                        // if(!item.value) {
+                        //     item.value = [];
+                        // }
+                        if((item.type == 'file' || item.type == 'img') && item.value.length) {
+                            item.files = [];
+                            item.value.forEach(file => {
+                                let obj = {};
+                                obj.url = file;
+                                item.files.push(obj);
+                            })
                         }
                     })
-                    // this.form = res.data.form;
                 }
             });
         }

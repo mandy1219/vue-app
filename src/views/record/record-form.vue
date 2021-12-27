@@ -163,7 +163,7 @@
                                 :after-read="afterReadFile(field)"
                                 accept=".jpg, .jpeg, .png, .xlsx, .txt, .docx, .pdf, .doc, .xls "
                             >
-                                <van-button icon="plus" class="van-uploader__upload" :disabled="disabled"></van-button>
+                                <van-button icon="plus" class="van-uploader__upload" :disabled="disabled" native-type="button"></van-button>
                                 <!-- <div class="van-uploader__upload">
                                     <van-icon name="plus"></van-icon>{{ $t('template.uploadFile') }}
                                 </div> -->
